@@ -18,7 +18,10 @@ namespace Go
 GameController::GameController (IPlayer & one, IPlayer & two)
   : m_playerOne(one)
   , m_playerTwo(two)
-{ }
+{
+    m_playerOne.setGameBoard(m_board);
+    m_playerTwo.setGameBoard(m_board);
+}
 
 void GameController::playAnother ()
 {
@@ -65,11 +68,18 @@ void GameController::start ()
     {
         IPlayer & currentPlayer = playerPair.first;
 
-        currentPlayer.onTurn();
+        if (currentPlayer.hasStones())
+        {
+            currentPlayer.onTurn();
 
-        auto move = currentPlayer.playStone();
+            auto theMove = currentPlayer.playStone();
 
-        passCount = (didPlayerPass(move)) ? passCount + 1 : 0;
+            passCount = (didPlayerPass(theMove)) ? passCount + 1 : 0;
+        }
+        else
+        {
+            ++passCount;
+        }
 
         std::swap(playerPair.first, playerPair.second);
     }

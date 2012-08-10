@@ -1,5 +1,20 @@
 #include "Player.hpp"
+#include "Board.hpp"
 #include <algorithm>
+#include <cassert>
+#include <utility>
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+template <typename T, typename ... Params>
+std::unique_ptr<T> make_unique (Params && ... params)
+{
+   return std::unique_ptr<T>(new T(std::forward<Params>(params)...));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
 
 namespace Go
 {
@@ -27,14 +42,30 @@ Stone::Color Player<TyPlayerUI>::chooseStoneColor ()
 }
 
 template <typename TyPlayerUI>
+const Board & Player<TyPlayerUI>::getGameBoard () const
+{
+    assert (m_pBoard != nullptr);
+
+    return *m_pBoard;
+}
+
+template <typename TyPlayerUI>
 const std::string & Player<TyPlayerUI>::getName () const
 {
     return m_name;
 }
 
 template <typename TyPlayerUI>
-void Player<TyPlayerUI>::setGameBoard (Board & board) const
+bool Player<TyPlayerUI>::hasStones () const
 {
+    return !m_stones.empty();
+}
+
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::setGameBoard (Board & board)
+{
+    assert(m_pBoard == nullptr);
+
     m_pBoard = &board;;
 }
 
@@ -43,19 +74,31 @@ void Player<TyPlayerUI>::setStoneColor (Stone::Color color)
 {
     m_stoneColor = color;
 
+    size_t numberOfStones = 0;
+
     if (m_stoneColor == Stone::Color::BLACK)
     {
-        m_stones.reserve(181);
+        numberOfStones = Stone::kDefaultBlackCount;
     }
     else
     {
-        m_stones.reserve(180);
+        numberOfStones = Stone::kDefaultWhiteCount;
     }
 
-    std::fill(std::begin(m_stones), std::end(m_stones), m_stoneColor);
+    m_stones.reserve(numberOfStones);
+
+/*
+    std::generate_n(std::begin(m_stones), numberOfStones, [color] ()
+    {
+        return std::unique_ptr<Stone>{new Stone{color}};
+    });
+*/
+
+//    std::fill(std::begin(m_stones), std::end(m_stones), make_unique<Stone>(m_stoneColor));
+
+    for (size_t i = 0; i < numberOfStones; ++i)
+        m_stones.emplace_back(make_unique<Stone>(m_stoneColor));
 }
-
-
 
 template <typename TyPlayerUI>
 std::pair<size_t, size_t> Player<TyPlayerUI>::playStone ()
@@ -64,13 +107,14 @@ std::pair<size_t, size_t> Player<TyPlayerUI>::playStone ()
 
     auto move = m_ui.promptForMove();
 
-    if (m_pBoard->isOccupiedPoint(move.first, move.second))
+    while (m_pBoard->isOccupiedPoint(move.first, move.second))
     {
-        //m_ui.onInvalidMove(move);
+        m_ui.onInvalidMove(move);
         move = m_ui.promptForMove();
     }
 
-    m_pBoard->placeStoneAt(move.first, move.second, );
+    m_pBoard->placeStoneAt(move.first, move.second, std::move(m_stones.back()));
+    m_stones.pop_back();
 
     return move;
 }

@@ -4,6 +4,7 @@
 #include "Player.hpp"
 #include "Stone.hpp"
 #include <string>
+#include <utility>
 
 namespace Go
 {
@@ -25,6 +26,7 @@ class ConsoleUI
 
     ConsoleUI (const IPlayer & player);
 
+    void onInvalidMove(const std::pair<size_t, size_t> & invalidMove);
     std::pair<size_t, size_t> promptForMove ();
     std::string promptForName ();
     Stone::Color promptForStoneColor ();

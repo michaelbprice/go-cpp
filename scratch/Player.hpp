@@ -16,7 +16,9 @@ class IPlayer
 
     virtual void chooseName () = 0;
     virtual Stone::Color chooseStoneColor () = 0;
+    virtual const Board & getGameBoard () const = 0;
     virtual const std::string & getName () const = 0;
+    virtual bool hasStones () const = 0;
     virtual void setGameBoard (Board & board) = 0;
     virtual void setStoneColor (Stone::Color color) = 0;
 
@@ -32,7 +34,7 @@ class Player final : public IPlayer
  private:
     std::string m_name;
 
-    Board * board = nullptr; // Non-owning pointer... do NOT delete!
+    Board * m_pBoard = nullptr; // Non-owning pointer... do NOT delete!
 
     Stones m_stones;
     Stone::Color m_stoneColor;
@@ -52,9 +54,11 @@ class Player final : public IPlayer
 
     virtual void chooseName () override;
     virtual Stone::Color chooseStoneColor () override;
+    virtual const Board & getGameBoard () const override;
+    virtual const std::string & getName () const override;
+    virtual bool hasStones () const override;
     virtual void setGameBoard (Board & board) override;
     virtual void setStoneColor (Stone::Color color) override;
-    virtual const std::string & getName () const override;
     virtual std::pair<size_t, size_t> playStone () override;
     virtual void onGameReady () override;
     virtual void onTurn () override;

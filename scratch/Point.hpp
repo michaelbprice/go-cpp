@@ -1,19 +1,21 @@
 #ifndef INCL_POINT_HPP__
 #define INCL_POINT_HPP__
 
+#include <memory>
+#include "Stone.hpp"
+
 namespace Go
 {
-
-class Stone;
 
 class Point final
 {
  private:
-// TODO: figure out constness
-    Stone * m_pStone = nullptr; // Non-owning, optional value. DO NOT DELETE!!!
+    std::unique_ptr<Stone> m_stone = nullptr;
 
  public:
-    void playStone (Stone & stone);
+    Stone::Color getStoneColor () const;
+
+    void playStone (std::unique_ptr<Stone> stone);
 
     bool canPlayStone () const;
 };

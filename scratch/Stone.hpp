@@ -14,9 +14,12 @@ namespace Go
 class Stone final
 {
  public:
+    static const size_t kDefaultBlackCount = 3;
+    static const size_t kDefaultWhiteCount = 2;
 
  	enum class Color : char
  	{
+                NONE,
  		BLACK,
  		WHITE
  	};
@@ -34,9 +37,10 @@ class Stone final
  	Stone(Stone && other) = default;
  	Stone & operator= (Stone && other) = default;
 
+    Stone::Color getColor ();
 };
 
-using Stones = std::vector<Stone>;
+using Stones = std::vector<std::unique_ptr<Stone>>;
 
 Stone::Color getOpposingColor (Stone::Color color);
 

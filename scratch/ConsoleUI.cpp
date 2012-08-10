@@ -15,23 +15,30 @@ static const unsigned char kBorderLeftChar = '=';
 static const unsigned char kPointChar = '+';
 static const unsigned char kPointSpacerChar = '-';
 
-void printBoard ()
+void printBoard (const Go::Board & board)
 {
-    std::cout << kBorderTopLeftChar << std::string((19*2)+1, kBorderTopChar) << kBorderTopRightChar << std::endl;;
+    using namespace Go;
+
+    std::cout << kBorderTopLeftChar << std::string((19*2)+1, kBorderTopChar) << kBorderTopRightChar << std::endl;
 
 
     for (size_t i = 0; i < 19; ++i)
     {
         std::cout << kBorderLeftChar;
-        for (size_t i = 0; i < 19; ++i)
+        for (size_t j = 0; j < 19; ++j)
         {
             std::cout << kPointSpacerChar;
-            std::cout << kPointChar;
+            switch (board.getStoneColorAt(i, j))
+            {
+             case Stone::Color::NONE:  std::cout << kPointChar; break;
+             case Stone::Color::BLACK: std::cout << 'B'; break; //'○'; break;
+             case Stone::Color::WHITE: std::cout << 'W'; break; //'◙'; break;
+            }
         }
         std::cout << kPointSpacerChar << kBorderRightChar << std::endl;
     }
 
-    std::cout << kBorderBottomLeftChar << std::string((19*2)+1, kBorderBottomChar) << kBorderBottomRightChar << std::endl;;
+    std::cout << kBorderBottomLeftChar << std::string((19*2)+1, kBorderBottomChar) << kBorderBottomRightChar << std::endl;
 }
 
 namespace Go
@@ -41,9 +48,14 @@ ConsoleUI::ConsoleUI (const IPlayer & player)
   : m_player(player)
 { }
 
+void ConsoleUI::onInvalidMove (const std::pair<size_t, size_t> & invalidMove)
+{
+    std::cout << "Invalid move [" << invalidMove.first << "," << invalidMove.second << "]. Try again!" << std::endl;
+}
+
 std::pair<size_t, size_t> ConsoleUI::promptForMove ()
 {
-    std::cout << m_player.getName() << ", enter move: " << std::endl;
+    std::cout << m_player.getName() << ", enter move: ";
 
     size_t x_coord = 0;
     size_t y_coord = 0;
@@ -81,7 +93,7 @@ void ConsoleUI::updateGameState ()
       std::cout << m_player.getName() << " is ready!" << std::endl;
     else
     {
-      printBoard();
+      printBoard(m_player.getGameBoard());
     }
 
     ++m_updateCount;
