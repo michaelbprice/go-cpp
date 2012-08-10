@@ -2,32 +2,62 @@
 #define INCL_PLAYER_HPP__
 
 #include "Stone.hpp"
+#include <utility>
+#include <string>
 
 namespace Go
 {
 
+class Board;
+
 class IPlayer
 {
  public:
- 	virtual void chooseStoneColor () = 0;
 
- 	virtual void playStone () = 0;
+    virtual void chooseName () = 0;
+    virtual Stone::Color chooseStoneColor () = 0;
+    virtual const std::string & getName () const = 0;
+    virtual void setGameBoard (Board & board) = 0;
+    virtual void setStoneColor (Stone::Color color) = 0;
+
+    virtual std::pair<size_t, size_t> playStone () = 0;
+
+    virtual void onGameReady () = 0;
+    virtual void onTurn () = 0;
 };
 
 template <typename TyPlayerUI>	
-class Player : public IPlayer
+class Player final : public IPlayer
 {
  private:
- 	Stones m_stones;
- 	Stone::Color m_stoneColor;
+    std::string m_name;
+
+    Board * board = nullptr; // Non-owning pointer... do NOT delete!
+
+    Stones m_stones;
+    Stone::Color m_stoneColor;
  	
- 	TyPlayerUI m_ui;
+    TyPlayerUI m_ui;
 
  public:
- 	Player ();
+    Player () = delete;
+    Player (const Player &) = delete;
+    Player & operator= (const Player &) = delete;
 
- 	virtual void chooseStoneColor () override;
- 	virtual void playStone () override;
+    ~Player () = default;
+    Player (Player &&) = default;
+    Player & operator= (Player &&) = default;
+
+    Player (const std::string & name);
+
+    virtual void chooseName () override;
+    virtual Stone::Color chooseStoneColor () override;
+    virtual void setGameBoard (Board & board) override;
+    virtual void setStoneColor (Stone::Color color) override;
+    virtual const std::string & getName () const override;
+    virtual std::pair<size_t, size_t> playStone () override;
+    virtual void onGameReady () override;
+    virtual void onTurn () override;
 };
 
 }

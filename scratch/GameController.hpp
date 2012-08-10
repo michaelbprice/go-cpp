@@ -4,19 +4,17 @@
 #include "Board.hpp"
 //#include "Point.hpp"
 //#include "Stone.hpp"
-#include "Player.hpp"
+//#include "Player.hpp"
+
 
 ///////////////////////////////////////////////////////////////////////////////
-
-template <typename T>
-class unique_ptr
-{
-};
 
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace Go
 {
+
+class IPlayer;
 
 class GameController final
 {
@@ -24,26 +22,24 @@ class GameController final
     bool m_shouldPlayAnother = false;
 
     Board m_board;
-    unique_ptr<IPlayer> m_playerOne;
-    unique_ptr<IPlayer> m_playerTwo;
-    // Stones m_blackStones;
-    // Stones m_whiteStones;
+    IPlayer & m_playerOne;
+    IPlayer & m_playerTwo;
 
  public:
- 	GameController (unique_ptr<IPlayer> one, unique_ptr<IPlayer> two);
+    GameController (IPlayer & one, IPlayer & two);
 
- 	void playAnother ();
+    void playAnother ();
 
- 	bool shouldPlayAnother ();
+    bool shouldPlayAnother ();
 
- 	void start ();
+    void start ();
 
- 	void stop ();
+    void stop ();
 
- 	void waitForStop ();
+    void waitForStop ();
 
  private:
- 	void scoreGame ();
+    void scoreGame ();
 };
 
 }

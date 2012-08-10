@@ -9,12 +9,13 @@ class Stone;
 class Point final
 {
  private:
- 	Stone * m_stone = nullptr; // Non-owning, optional value. DO NOT DELETE!!!
+// TODO: figure out constness
+    Stone * m_pStone = nullptr; // Non-owning, optional value. DO NOT DELETE!!!
 
  public:
- 	void playStone (const Stone & stone);
+    void playStone (Stone & stone);
 
- 	bool canPlayStone ();
+    bool canPlayStone () const;
 };
 
 }

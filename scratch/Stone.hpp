@@ -1,10 +1,10 @@
 #ifndef INCL_STONE_HPP__
 #define INCL_STONE_HPP__
 
+#include <vector>
+
 ///////////////////////////////////////////////////////////////////////////////
 
-template <typename T>
-class vector { public: vector (int, const T&);};
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -36,7 +36,10 @@ class Stone final
 
 };
 
-using Stones = vector<Stone>;
+using Stones = std::vector<Stone>;
+
+Stone::Color getOpposingColor (Stone::Color color);
+
 
 }
 

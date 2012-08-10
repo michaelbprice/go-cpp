@@ -1,20 +1,20 @@
 #ifndef INCL_BOARD_HPP__
 #define INCL_BOARD_HPP__
 
-///////////////////////////////////////////////////////////////////////////////
-
-template <typename T, int N>
-class array {};
+#include "Point.hpp"
+#include <array>
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template <typename T, int X, int Y>
-using multi_array = array<array<T, X>, Y>;
+
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename T, size_t X, size_t Y>
+using multi_array = std::array<std::array<T, X>, Y>;
 
 namespace Go
 {
 	
-class Point;
 class Stone;
 
 class Board final
@@ -26,9 +26,9 @@ class Board final
 
  public:
 
- 	bool isOccupiedPoint (int x, int y);
- 	bool isLibertyPoint (int x, int y);
- 	void placeStoneAt (int x, int y, const Stone & stone);
+ 	bool isOccupiedPoint (size_t x, size_t y);
+ 	bool isLibertyPoint (size_t x, size_t y);
+ 	void placeStoneAt (size_t x, size_t y, const Stone & stone);
 
 };
 
