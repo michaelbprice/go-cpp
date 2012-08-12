@@ -10,6 +10,9 @@ Stone::Color Stone::getColor ()
 
 Stone::Color getOpposingColor (Stone::Color color)
 {
+    if (color == Stone::Color::NONE)
+        return color;
+
     return (color == Stone::Color::BLACK) ? Stone::Color::WHITE : Stone::Color::BLACK;
 }
 

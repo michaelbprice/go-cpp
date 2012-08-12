@@ -8,6 +8,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <cassert>
 
 namespace Go {
 
@@ -28,10 +29,13 @@ Chain::Chain (Stone::Color stoneColor, const Point & startPoint, const Board & b
 
     doChainCalculation(startPoint, board, myPointsToIgnore); 
 
-
-std::cout << "NONE:" << m_chainAndBorders[Stone::Color::NONE].size() << std::endl;
-std::cout << "BLACK:" << m_chainAndBorders[Stone::Color::BLACK].size() << std::endl;
-std::cout << "WHITE:" << m_chainAndBorders[Stone::Color::WHITE].size() << std::endl;
+/*
+std::cout << "Chain: ";
+std::cout << "NONE:" << m_chainAndBorders[Stone::Color::NONE].size() << " ";//std::endl;
+std::cout << "BLACK:" << m_chainAndBorders[Stone::Color::BLACK].size() << " ";//std::endl;
+std::cout << "WHITE:" << m_chainAndBorders[Stone::Color::WHITE].size() << " ";//std::endl;
+std::cout << std::endl;
+*/
 
     if (pointsToIgnore != nullptr)
     {
@@ -44,6 +48,13 @@ Chain::Chain (const Point & startPoint, const Board & board, ConstPointSet * poi
 {
 }
 
+/*
+Chain::~Chain ()
+{
+std::cout << "Destruction" << std::endl;
+}
+*/
+
 void Chain::doChainCalculation (const Point & point, const Board & board, ConstPointSet & pointsToIgnore)
 {
 //std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -53,14 +64,8 @@ void Chain::doChainCalculation (const Point & point, const Board & board, ConstP
 
     pointsToIgnore.insert(&point);
 
-    m_points.insert(&point);
+    //m_points.insert(&point);
     m_chainAndBorders[m_color].insert(&point);
-
-/*
-    auto testAndInsert = [&] (Stone::Color color, const Point & thePoint)
-    {
-    };
-*/
 
     auto recurseFn = [&] (const Point & testPoint)
     {
@@ -70,16 +75,8 @@ void Chain::doChainCalculation (const Point & point, const Board & board, ConstP
             {
                 doChainCalculation(testPoint, board, pointsToIgnore);
             }
-            else// if (testPoint.getStoneColor() == Stone::Color::NONE)
+            else
             {
-                if (testPoint.getStoneColor() == Stone::Color::NONE)
-                {
-                    if (m_liberties.find(&testPoint) == m_liberties.end())
-                    {
-                        m_liberties.insert(&testPoint);
-                    }
-                }
-
                 ConstPointSet & set = m_chainAndBorders[testPoint.getStoneColor()];
 
                 if (set.find(&testPoint) == set.end())
@@ -96,6 +93,13 @@ void Chain::doChainCalculation (const Point & point, const Board & board, ConstP
     recurseFn(board.getPointLeft(point));
 }
 
+size_t Chain::borderCountOf (Stone::Color color)
+{
+    assert(color != m_color);
+
+    return m_chainAndBorders[color].size();
+}
+
 Stone::Color Chain::color ()
 {
     return m_color;
@@ -103,13 +107,11 @@ Stone::Color Chain::color ()
 
 size_t Chain::libertyCount ()
 {
-    //return m_liberties.size();
     return m_chainAndBorders[Stone::Color::NONE].size();
 }
 
 size_t Chain::size ()
 {
-    //return m_points.size();
     return m_chainAndBorders[m_color].size();
 }
 

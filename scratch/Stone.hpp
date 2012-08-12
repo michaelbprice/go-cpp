@@ -15,8 +15,8 @@ namespace Go
 class Stone final
 {
  public:
-    static const size_t kDefaultBlackCount = 11;
-    static const size_t kDefaultWhiteCount = 10;
+    static const size_t kDefaultBlackCount = 6;
+    static const size_t kDefaultWhiteCount = 5;
 
  	enum class Color : char
  	{

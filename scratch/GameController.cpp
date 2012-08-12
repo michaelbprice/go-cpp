@@ -69,10 +69,10 @@ void GameController::start ()
     {
         IPlayer & currentPlayer = playerPair.first;
 
+        currentPlayer.onTurn();
+
         if (currentPlayer.hasStones())
         {
-            currentPlayer.onTurn();
-
             auto theMove = currentPlayer.playStone();
 
             currentPlayer.addToCaptured(m_board.removeCapturedStones());
@@ -90,6 +90,7 @@ void GameController::start ()
 
     // Game is over! Time to score
     //
+    
     size_t playerOneScore = m_playerOne.calculateScore();
     size_t playerTwoScore = m_playerTwo.calculateScore();
 

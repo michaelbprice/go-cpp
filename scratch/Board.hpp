@@ -59,6 +59,8 @@ class Board final
     size_t removeCapturedStones ();
     bool wouldBeValidMove (Stone::Color color, size_t row, size_t column) const;
 
+    std::vector<Chain> getAllEmptyChains ();
+
  private:
     Chain calculateChain (size_t row, size_t column);
 };
