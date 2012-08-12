@@ -74,6 +74,8 @@ void GameController::start ()
 
             auto theMove = currentPlayer.playStone();
 
+            m_board.removeCapturedStones();
+
             passCount = (didPlayerPass(theMove)) ? passCount + 1 : 0;
         }
         else

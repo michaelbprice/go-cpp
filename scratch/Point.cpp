@@ -22,4 +22,9 @@ bool Point::canPlayStone () const
     return m_stone.get() == nullptr;
 }
 
+void Point::removeStone ()
+{ 
+    m_stone.reset();
+}
+
 } // namespace Go

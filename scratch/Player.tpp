@@ -107,7 +107,8 @@ std::pair<size_t, size_t> Player<TyPlayerUI>::playStone ()
 
     auto move = m_ui.promptForMove();
 
-    while (m_pBoard->isOccupiedPoint(move.first, move.second))
+    //while (m_pBoard->isOccupiedPoint(move.first, move.second))
+    while (!m_pBoard->wouldBeValidMove(m_stones.back()->getColor(), move.first, move.second))
     {
         m_ui.onInvalidMove(move);
         move = m_ui.promptForMove();
