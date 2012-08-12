@@ -14,6 +14,9 @@ namespace Go {
 Chain::Chain (Stone::Color stoneColor, const Point & startPoint, const Board & board, ConstPointSet * pointsToIgnore)
   : m_color(stoneColor)
   , m_startPoint(startPoint)
+  , m_chainAndBorders({{Stone::Color::NONE, ConstPointSet{}},
+                       {Stone::Color::BLACK, ConstPointSet{}},
+                       {Stone::Color::WHITE, ConstPointSet{}}})
 {
     if (pointsToIgnore != nullptr)
     {
@@ -24,6 +27,11 @@ Chain::Chain (Stone::Color stoneColor, const Point & startPoint, const Board & b
     ConstPointSet myPointsToIgnore;
 
     doChainCalculation(startPoint, board, myPointsToIgnore); 
+
+
+std::cout << "NONE:" << m_chainAndBorders[Stone::Color::NONE].size() << std::endl;
+std::cout << "BLACK:" << m_chainAndBorders[Stone::Color::BLACK].size() << std::endl;
+std::cout << "WHITE:" << m_chainAndBorders[Stone::Color::WHITE].size() << std::endl;
 
     if (pointsToIgnore != nullptr)
     {
@@ -46,6 +54,13 @@ void Chain::doChainCalculation (const Point & point, const Board & board, ConstP
     pointsToIgnore.insert(&point);
 
     m_points.insert(&point);
+    m_chainAndBorders[m_color].insert(&point);
+
+/*
+    auto testAndInsert = [&] (Stone::Color color, const Point & thePoint)
+    {
+    };
+*/
 
     auto recurseFn = [&] (const Point & testPoint)
     {
@@ -55,11 +70,21 @@ void Chain::doChainCalculation (const Point & point, const Board & board, ConstP
             {
                 doChainCalculation(testPoint, board, pointsToIgnore);
             }
-            else if (testPoint.getStoneColor() == Stone::Color::NONE)
+            else// if (testPoint.getStoneColor() == Stone::Color::NONE)
             {
-                if (m_liberties.find(&testPoint) == m_liberties.end())
+                if (testPoint.getStoneColor() == Stone::Color::NONE)
                 {
-                    m_liberties.insert(&testPoint);
+                    if (m_liberties.find(&testPoint) == m_liberties.end())
+                    {
+                        m_liberties.insert(&testPoint);
+                    }
+                }
+
+                ConstPointSet & set = m_chainAndBorders[testPoint.getStoneColor()];
+
+                if (set.find(&testPoint) == set.end())
+                {
+                    set.insert(&testPoint);
                 }
             }
         }
@@ -78,12 +103,14 @@ Stone::Color Chain::color ()
 
 size_t Chain::libertyCount ()
 {
-    return m_liberties.size();
+    //return m_liberties.size();
+    return m_chainAndBorders[Stone::Color::NONE].size();
 }
 
 size_t Chain::size ()
 {
-    return m_points.size();
+    //return m_points.size();
+    return m_chainAndBorders[m_color].size();
 }
 
 } // namespace Go

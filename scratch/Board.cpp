@@ -78,8 +78,10 @@ bool Board::placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone)
     return true;
 }
 
-void Board::removeCapturedStones ()
+size_t Board::removeCapturedStones ()
 {
+    size_t captureCount = 0;
+
     ConstPointSet alreadyVisited;
 
     for (size_t row = 0; row < m_points.size(); ++row)
@@ -92,6 +94,12 @@ void Board::removeCapturedStones ()
 
                 if (currentChain.color() != Stone::Color::NONE && currentChain.libertyCount() == 0)
                 {
+                    // If our move validity check was correct, these should always be
+                    // stones belonging to the opponent of the player of made the last
+                    // move.
+                    //
+                    captureCount += currentChain.size();
+
                     currentChain.foreach([this](const Point & point)
                     {
                         m_points[point.coordinates.row][point.coordinates.column].removeStone();
@@ -104,6 +112,8 @@ void Board::removeCapturedStones ()
             }
         }
     }
+
+    return captureCount;
 }
 
 bool Board::wouldBeValidMove (Stone::Color stoneColor, size_t row, size_t column) const

@@ -26,6 +26,12 @@ Player<TyPlayerUI>::Player (const std::string & name)
 {
 
 }
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::addToCaptured (size_t numCaptured)
+{
+    m_capturedCount += numCaptured;
+}
+
 
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::chooseName ()
@@ -130,6 +136,39 @@ template <typename TyPlayerUI>
 void Player<TyPlayerUI>::onTurn ()
 {
     m_ui.updateGameState();
+}
+
+
+template <typename TyPlayerUI>
+size_t Player<TyPlayerUI>::calculateScore ()
+{
+    // TODO: calculate area/territory
+/*
+    ConstPointSet alreadyVisited;
+
+    // Look 
+    Chain
+*/
+
+    return m_capturedCount;
+}
+
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::lost ()
+{
+    m_ui.onLoss();
+}
+
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::tied ()
+{
+    m_ui.onTie();
+}
+
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::won ()
+{
+    m_ui.onWin();
 }
 
 }

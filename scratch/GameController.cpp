@@ -6,6 +6,7 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
+#include <iostream>
 
 bool didPlayerPass (const std::pair<size_t, size_t> & move)
 {
@@ -74,7 +75,8 @@ void GameController::start ()
 
             auto theMove = currentPlayer.playStone();
 
-            m_board.removeCapturedStones();
+            currentPlayer.addToCaptured(m_board.removeCapturedStones());
+
 
             passCount = (didPlayerPass(theMove)) ? passCount + 1 : 0;
         }
@@ -88,7 +90,24 @@ void GameController::start ()
 
     // Game is over! Time to score
     //
+    size_t playerOneScore = m_playerOne.calculateScore();
+    size_t playerTwoScore = m_playerTwo.calculateScore();
 
+    if (playerOneScore == playerTwoScore)
+    {
+        m_playerOne.tied();
+        m_playerTwo.tied();
+    } 
+    else if (playerOneScore > playerTwoScore)
+    {
+        m_playerOne.won();
+        m_playerTwo.lost();
+    }
+    else // (playerTwoScore > playerOneScore)
+    {
+        m_playerTwo.won();
+        m_playerOne.lost();
+    }
     
 
 }

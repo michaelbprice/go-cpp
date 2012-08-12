@@ -53,6 +53,21 @@ void ConsoleUI::onInvalidMove (const std::pair<size_t, size_t> & invalidMove)
     std::cout << "Invalid move [" << invalidMove.first << "," << invalidMove.second << "]. Try again!" << std::endl;
 }
 
+void ConsoleUI::onTie ()
+{
+    std::cout << m_player.getName() << " tied... So close." << std::endl;
+}
+
+void ConsoleUI::onLoss ()
+{
+    std::cout << m_player.getName() << " loses. Sorry!" << std::endl;
+}
+
+void ConsoleUI::onWin ()
+{
+    std::cout << m_player.getName() << " WINS!" << std::endl;
+}
+
 std::pair<size_t, size_t> ConsoleUI::promptForMove ()
 {
     std::cout << m_player.getName() << ", enter move: ";

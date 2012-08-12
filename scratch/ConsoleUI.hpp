@@ -27,6 +27,10 @@ class ConsoleUI
     ConsoleUI (const IPlayer & player);
 
     void onInvalidMove(const std::pair<size_t, size_t> & invalidMove);
+    void onWin ();
+    void onLoss ();
+    void onTie ();
+
     std::pair<size_t, size_t> promptForMove ();
     std::string promptForName ();
     Stone::Color promptForStoneColor ();

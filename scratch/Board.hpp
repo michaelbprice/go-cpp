@@ -56,7 +56,7 @@ class Board final
     bool isOccupiedPoint (size_t x, size_t y);
     bool isLibertyPoint (size_t x, size_t y);
     bool placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone);
-    void removeCapturedStones ();
+    size_t removeCapturedStones ();
     bool wouldBeValidMove (Stone::Color color, size_t row, size_t column) const;
 
  private:

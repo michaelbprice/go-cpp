@@ -2,6 +2,7 @@
 #define INCL_STONE_HPP__
 
 #include <vector>
+#include <unordered_map>
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -44,7 +45,17 @@ using Stones = std::vector<std::unique_ptr<Stone>>;
 
 Stone::Color getOpposingColor (Stone::Color color);
 
+}
 
+namespace std
+{
+  template <> struct hash<Go::Stone::Color>
+  {
+    size_t operator() (const Go::Stone::Color & c) const
+    {
+      return hash<char>()(static_cast<char>(c));
+    }
+  };
 }
 
 #endif /* end of include guard: INCL_STONE_HPP__ */

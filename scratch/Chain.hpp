@@ -2,6 +2,7 @@
 #define __CHAIN_HPP_
 
 #include <unordered_set>
+#include <unordered_map>
 #include "Point.hpp"
 #include "Stone.hpp"
 
@@ -15,6 +16,8 @@ enum class Stone::Color : char;
 class Chain
 {
  private:
+    std::unordered_map<Stone::Color, ConstPointSet> m_chainAndBorders;
+
     ConstPointSet m_points;
     ConstPointSet m_liberties;
     Stone::Color m_color;
