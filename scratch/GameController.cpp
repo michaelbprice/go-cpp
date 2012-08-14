@@ -68,6 +68,7 @@ void GameController::start ()
     while (passCount < 2)
     {
         IPlayer & currentPlayer = playerPair.first;
+        IPlayer & waitingPlayer = playerPair.second;
 
         currentPlayer.onTurn();
 
@@ -75,7 +76,7 @@ void GameController::start ()
         {
             auto theMove = currentPlayer.playStone();
 
-            currentPlayer.addToCaptured(m_board.removeCapturedStones());
+            currentPlayer.addToCaptured(m_board.removeCapturedStones(waitingPlayer.getStoneColor()));
 
 
             passCount = (didPlayerPass(theMove)) ? passCount + 1 : 0;

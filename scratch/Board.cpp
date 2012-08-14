@@ -9,9 +9,12 @@
 
 #include <iostream>
 
+using namespace std;
+
 namespace Go {
 
 Board::Board ()
+  : m_ko({false, m_points[0][0]})
 {
     for (size_t row = 0; row < BOARD_SIZE; ++row)
     {
@@ -104,13 +107,15 @@ bool Board::placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone)
 {
     assert(stone.get() != nullptr);
 
+    m_ko.second = m_points[x][y];
+
     m_points[x][y].playStone(std::move(stone));
+
     return true;
 }
 
-size_t Board::removeCapturedStones ()
+size_t Board::removeCapturedStones (Stone::Color colorToCapture)
 {
-std::cout << "\tCapturing" << std::endl;
     size_t captureCount = 0;
 
     ConstPointSet alreadyVisited;
@@ -123,12 +128,8 @@ std::cout << "\tCapturing" << std::endl;
             {
                 Chain currentChain {m_points[row][column], *this, &alreadyVisited};
 
-                if (currentChain.color() != Stone::Color::NONE && currentChain.libertyCount() == 0)
+                if (currentChain.color() == colorToCapture && currentChain.libertyCount() == 0)
                 {
-                    // If our move validity check was correct, these should always be
-                    // stones belonging to the opponent of the player of made the last
-                    // move.
-                    //
                     captureCount += currentChain.size();
 
                     currentChain.foreach([this](const Point & point)
@@ -139,34 +140,60 @@ std::cout << "\tCapturing" << std::endl;
             }
             catch (int)
             {
-//std::cout << "Already visited as part of another chain [" << row << "," << column << "]" << std::endl;
             }
         }
     }
 
-std::cout << "\tDone Capturing" << std::endl;
+    // Remember this state for the Ko rule
+    //
+    m_ko.first = (captureCount == 1);
+
     return captureCount;
 }
 
-bool Board::wouldBeValidMove (Stone::Color stoneColor, size_t row, size_t column) const
+bool Board::isValidMove (Stone::Color stoneColor, size_t row, size_t column) const
 {
-//std::cout << "\tProspecting" << std::endl;
     if (!m_points[row][column].canPlayStone())
     {
         return false;
     }
 
-    //std::vector<Chain> newChains = calculateChains();
-
     Chain potentialChain {stoneColor, m_points[row][column], *this, nullptr};
 
-//std::cout << "\tDone Prospecting" << std::endl;
+    ConstPointSet alreadyVisited;
+
+    bool wouldCaptureOpponentChain = false;
+
+
+    potentialChain.foreach(getOpposingColor(stoneColor),
+    [this, &alreadyVisited, &wouldCaptureOpponentChain](const Point & point)
+    {
+        Chain opponentChain {point, *this, &alreadyVisited};
+
+        if (opponentChain.libertyCount() == 1)
+        {
+            if (!doesKoRuleApply(opponentChain))
+                wouldCaptureOpponentChain = true;
+        }
+    });
+
     if (potentialChain.libertyCount() == 0)
     {
-        return false;
+        return wouldCaptureOpponentChain; 
     }
 
     return true;
+}
+
+bool Board::doesKoRuleApply (const Chain & chain) const
+{
+    if (chain.size() == 1)
+    {
+        if (m_ko.first && chain.containsPoint(m_ko.second))
+            return true;
+    }
+
+    return false;
 }
 
 } // namespace Go

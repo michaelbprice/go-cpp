@@ -1,6 +1,10 @@
 #include "Point.hpp"
 #include "Stone.hpp"
 #include <utility>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
 
 namespace Go {
 
@@ -14,7 +18,7 @@ Stone::Color Point::getStoneColor () const
 
 void Point::playStone (std::unique_ptr<Stone> stone)
 {
-    m_stone = std::move(stone);
+    swap(m_stone, stone);
 }
 
 bool Point::canPlayStone () const

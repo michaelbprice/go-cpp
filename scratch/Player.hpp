@@ -22,6 +22,7 @@ class IPlayer
     virtual bool hasStones () const = 0;
     virtual void setGameBoard (Board & board) = 0;
     virtual void setStoneColor (Stone::Color color) = 0;
+    virtual Stone::Color getStoneColor () = 0;
 
     virtual size_t calculateScore () = 0;
     virtual void lost () = 0;
@@ -67,6 +68,7 @@ class Player final : public IPlayer
     virtual bool hasStones () const override;
     virtual void setGameBoard (Board & board) override;
     virtual void setStoneColor (Stone::Color color) override;
+    virtual Stone::Color getStoneColor () override;
     virtual std::pair<size_t, size_t> playStone () override;
     virtual void onGameReady () override;
     virtual void onTurn () override;

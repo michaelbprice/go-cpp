@@ -3,6 +3,7 @@
 
 #include <unordered_set>
 #include <unordered_map>
+#include <utility>
 #include "Point.hpp"
 #include "Stone.hpp"
 
@@ -30,16 +31,25 @@ class Chain
 //    ~Chain ();
 
     size_t borderCountOf (Stone::Color color);
-    Stone::Color color ();
-    size_t libertyCount ();
-    size_t size ();
+    Stone::Color color () const;
+    size_t libertyCount () const;
+    size_t size () const;
+
+    bool containsPoint (const Point & point) const;
 
     template <typename Fn>
     void foreach (Fn && fn)
     {
-        for (auto & p : m_chainAndBorders[m_color])
+        foreach(m_color, std::forward<Fn>(fn));
+    }
+
+    template <typename Fn>
+    void foreach (Stone::Color color, Fn && fn)
+    {
+        for (auto & p : m_chainAndBorders[color])
             fn(*p);
     }
+
 
  private:
     void doChainCalculation (const Point & point, const Board & board, ConstPointSet & pointsToIgnore);

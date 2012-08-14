@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <utility>
+#include <iostream>
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -93,17 +94,14 @@ void Player<TyPlayerUI>::setStoneColor (Stone::Color color)
 
     m_stones.reserve(numberOfStones);
 
-/*
-    std::generate_n(std::begin(m_stones), numberOfStones, [color] ()
-    {
-        return std::unique_ptr<Stone>{new Stone{color}};
-    });
-*/
-
-//    std::fill(std::begin(m_stones), std::end(m_stones), make_unique<Stone>(m_stoneColor));
-
     for (size_t i = 0; i < numberOfStones; ++i)
         m_stones.emplace_back(make_unique<Stone>(m_stoneColor));
+}
+
+template <typename TyPlayerUI>
+Stone::Color Player<TyPlayerUI>::getStoneColor ()
+{
+    return m_stoneColor;
 }
 
 template <typename TyPlayerUI>
@@ -113,8 +111,7 @@ std::pair<size_t, size_t> Player<TyPlayerUI>::playStone ()
 
     auto move = m_ui.promptForMove();
 
-    //while (m_pBoard->isOccupiedPoint(move.first, move.second))
-    while (!m_pBoard->wouldBeValidMove(m_stones.back()->getColor(), move.first, move.second))
+    while (!m_pBoard->isValidMove(m_stones.back()->getColor(), move.first, move.second))
     {
         m_ui.onInvalidMove(move);
         move = m_ui.promptForMove();
@@ -142,15 +139,22 @@ void Player<TyPlayerUI>::onTurn ()
 template <typename TyPlayerUI>
 size_t Player<TyPlayerUI>::calculateScore ()
 {
-    // TODO: calculate area/territory
-/*
-    ConstPointSet alreadyVisited;
+    size_t territoryCount = 0;
 
-    // Look 
-    Chain
-*/
+    for (auto & chain : m_pBoard->getAllEmptyChains())
+    {
+        assert(chain.color() == Stone::Color::NONE);
 
-    return m_capturedCount;
+        Stone::Color opponentColor = getOpposingColor(m_stoneColor);
+
+        if (chain.borderCountOf(opponentColor) > 0)
+            continue;
+
+        if (chain.borderCountOf(m_stoneColor) > 0)
+            territoryCount += chain.size();
+    }
+
+    return territoryCount + m_capturedCount;
 }
 
 template <typename TyPlayerUI>

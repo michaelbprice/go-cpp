@@ -100,19 +100,25 @@ size_t Chain::borderCountOf (Stone::Color color)
     return m_chainAndBorders[color].size();
 }
 
-Stone::Color Chain::color ()
+Stone::Color Chain::color () const
 {
     return m_color;
 }
 
-size_t Chain::libertyCount ()
+size_t Chain::libertyCount () const
 {
-    return m_chainAndBorders[Stone::Color::NONE].size();
+    return m_chainAndBorders.at(Stone::Color::NONE).size();
 }
 
-size_t Chain::size ()
+size_t Chain::size () const
 {
-    return m_chainAndBorders[m_color].size();
+    return m_chainAndBorders.at(m_color).size();
+}
+
+bool Chain::containsPoint (const Point & point) const
+{
+    const ConstPointSet & theChain = m_chainAndBorders.at(m_color);
+    return (theChain.find(&point) != theChain.end());
 }
 
 } // namespace Go

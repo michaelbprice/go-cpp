@@ -7,6 +7,7 @@
 #include <array>
 #include <memory>
 #include <unordered_set>
+#include <functional>
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -45,9 +46,12 @@ class Board final
 
     multi_array<Point, BOARD_SIZE, BOARD_SIZE> m_points;
 
+    std::pair<bool, std::reference_wrapper<const Point>> m_ko;
+
  public:
     Board ();
 
+    bool doesKoRuleApply (const Chain & chain) const;
     const Point & getPointAbove (const Point & point) const;
     const Point & getPointBelow (const Point & point) const;
     const Point & getPointLeft (const Point & point) const;
@@ -56,8 +60,8 @@ class Board final
     bool isOccupiedPoint (size_t x, size_t y);
     bool isLibertyPoint (size_t x, size_t y);
     bool placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone);
-    size_t removeCapturedStones ();
-    bool wouldBeValidMove (Stone::Color color, size_t row, size_t column) const;
+    size_t removeCapturedStones (Stone::Color colorToCapture);
+    bool isValidMove (Stone::Color color, size_t row, size_t column) const;
 
     std::vector<Chain> getAllEmptyChains ();
 
