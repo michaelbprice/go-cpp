@@ -35,6 +35,9 @@ class IPlayer
     virtual void onTurn () = 0;
 };
 
+//using PlayerPair = std::pair<std::reference_wrapper<IPlayer>, std::reference_wrapper<IPlayer>>;
+#include "Player.fwd.hpp"
+
 template <typename TyPlayerUI>	
 class Player final : public IPlayer
 {

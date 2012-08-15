@@ -1,13 +1,13 @@
-#include "Board.hpp"
-#include "Stone.hpp"
-
-#include <functional>
-#include <memory>
-#include <utility>
-#include <unordered_set>
 #include <cassert>
-
+#include <functional>
 #include <iostream>
+#include <memory>
+#include <unordered_set>
+#include <utility>
+
+#include "Board.hpp"
+#include "Logger.hpp"
+#include "Stone.hpp"
 
 using namespace std;
 
@@ -16,6 +16,8 @@ namespace Go {
 Board::Board ()
   : m_ko({false, m_points[0][0]})
 {
+    LOGFUNCTION(cout, "Board::Board");
+
     for (size_t row = 0; row < BOARD_SIZE; ++row)
     {
         for (size_t column =0; column < BOARD_SIZE; ++column)
@@ -28,6 +30,8 @@ Board::Board ()
 
 const Point & Board::getPointAbove (const Point & point) const
 {
+    LOGFUNCTION(cout, "Board::getPointAbove");
+
     if (point.coordinates.row - 1 < BOARD_SIZE)
         return m_points[point.coordinates.row - 1][point.coordinates.column];
 
@@ -36,6 +40,8 @@ const Point & Board::getPointAbove (const Point & point) const
 
 const Point & Board::getPointBelow (const Point & point) const
 {
+    LOGFUNCTION(cout, "Board::getPointBelow");
+
     if (point.coordinates.row + 1 < BOARD_SIZE)
         return m_points[point.coordinates.row + 1][point.coordinates.column];
 
@@ -44,6 +50,8 @@ const Point & Board::getPointBelow (const Point & point) const
 
 const Point & Board::getPointLeft (const Point & point) const
 {
+    LOGFUNCTION(cout, "Board::getPointLeft");
+
     if (point.coordinates.column - 1 < BOARD_SIZE)
         return m_points[point.coordinates.row][point.coordinates.column - 1];
 
@@ -52,6 +60,8 @@ const Point & Board::getPointLeft (const Point & point) const
 
 const Point & Board::getPointRight (const Point & point) const
 {
+    LOGFUNCTION(cout, "Board::getPointRight");
+
     if (point.coordinates.column + 1 < BOARD_SIZE)
         return m_points[point.coordinates.row][point.coordinates.column + 1];
 
@@ -60,21 +70,29 @@ const Point & Board::getPointRight (const Point & point) const
 
 Stone::Color Board::getStoneColorAt (size_t x, size_t y) const
 {
+    //LOGFUNCTION(cout, "Board::getStoneColorAt");
+
     return m_points[x][y].getStoneColor();
 }
 
 bool Board::isOccupiedPoint (size_t x, size_t y)
 {
+    LOGFUNCTION(cout, "Board::isOccupiedPoint");
+
     return !(m_points[x][y].canPlayStone());
 }
 
 bool Board::isLibertyPoint (size_t x, size_t y)
 {
+    LOGFUNCTION(cout, "Board::isLibertyPoint");
+
     return false;
 }
 
 std::vector<Chain> Board::getAllEmptyChains ()
 {
+    LOGFUNCTION(cout, "Board::getAllEmptyChains");
+
     std::vector<Chain> emptyChains;
     ConstPointSet alreadyVisited;
 
@@ -105,6 +123,8 @@ std::vector<Chain> Board::getAllEmptyChains ()
 
 bool Board::placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone)
 {
+    LOGFUNCTION(cout, "Board::placeStoneAt");
+
     assert(stone.get() != nullptr);
 
     m_ko.second = m_points[x][y];
@@ -116,6 +136,8 @@ bool Board::placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone)
 
 size_t Board::removeCapturedStones (Stone::Color colorToCapture)
 {
+    LOGFUNCTION(cout, "Board::removeCapturedStones");
+
     size_t captureCount = 0;
 
     ConstPointSet alreadyVisited;
@@ -153,6 +175,8 @@ size_t Board::removeCapturedStones (Stone::Color colorToCapture)
 
 bool Board::isValidMove (Stone::Color stoneColor, size_t row, size_t column) const
 {
+    LOGFUNCTION(cout, "Board::isValidMove");
+
     if (!m_points[row][column].canPlayStone())
     {
         return false;
@@ -168,12 +192,20 @@ bool Board::isValidMove (Stone::Color stoneColor, size_t row, size_t column) con
     potentialChain.foreach(getOpposingColor(stoneColor),
     [this, &alreadyVisited, &wouldCaptureOpponentChain](const Point & point)
     {
-        Chain opponentChain {point, *this, &alreadyVisited};
+        LOGFUNCTION(cout, "Board::lambda_wouldCapture");
 
-        if (opponentChain.libertyCount() == 1)
+        try
         {
-            if (!doesKoRuleApply(opponentChain))
-                wouldCaptureOpponentChain = true;
+            Chain opponentChain {point, *this, &alreadyVisited};
+
+            if (opponentChain.libertyCount() == 1)
+            {
+                if (!doesKoRuleApply(opponentChain))
+                    wouldCaptureOpponentChain = true;
+            }
+        }
+        catch (int)
+        {
         }
     });
 
@@ -187,6 +219,8 @@ bool Board::isValidMove (Stone::Color stoneColor, size_t row, size_t column) con
 
 bool Board::doesKoRuleApply (const Chain & chain) const
 {
+    LOGFUNCTION(cout, "Board::doesKoRuleApply");
+
     if (chain.size() == 1)
     {
         if (m_ko.first && chain.containsPoint(m_ko.second))

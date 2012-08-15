@@ -2,25 +2,16 @@
 #define INCL_GAMECONTROLLER_HPP__
 
 #include "Board.hpp"
-//#include "Point.hpp"
-//#include "Stone.hpp"
-//#include "Player.hpp"
 
+namespace Go {
 
-///////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-
-namespace Go
-{
-
-class IPlayer;
+// Forward Declarations
+//
+#include "Player.fwd.hpp"
 
 class GameController final
 {
  private:
-    bool m_shouldPlayAnother = false;
-
     Board m_board;
     IPlayer & m_playerOne;
     IPlayer & m_playerTwo;
@@ -28,22 +19,17 @@ class GameController final
  public:
     GameController (IPlayer & one, IPlayer & two);
 
-    void playAnother ();
-
-    bool shouldPlayAnother ();
-
+    void doGameLoop (PlayerPair & playerPair);
+    void doScoring ();
     void start ();
-
     void stop ();
-
     void waitForStop ();
 
  private:
     void scoreGame ();
 };
 
-}
-
-
+} // namespace Go
 
 #endif /* end of include guard: INCL_GAMECONTROLLER_HPP__ */
+
