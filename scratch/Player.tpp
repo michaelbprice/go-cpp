@@ -4,6 +4,7 @@
 #include <utility>
 
 #include "Board.hpp"
+#include "Chain.hpp"
 #include "Logger.hpp"
 #include "Player.hpp"
 
@@ -28,13 +29,13 @@ Player<TyPlayerUI>::Player (const string & name)
   : m_ui(*this)
   , m_name(name)
 {
-    LOGFUNCTION(cout, "Player::Player");
+    LOG_FUNCTION(cout, "Player::Player");
 }
 
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::addToCaptured (size_t numCaptured)
 {
-    LOGFUNCTION(cout, "Player::addToCaptured");
+    LOG_FUNCTION(cout, "Player::addToCaptured");
 
     m_capturedCount += numCaptured;
 }
@@ -43,7 +44,7 @@ void Player<TyPlayerUI>::addToCaptured (size_t numCaptured)
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::chooseName ()
 {
-    LOGFUNCTION(cout, "Player::chooseName");
+    LOG_FUNCTION(cout, "Player::chooseName");
 
     m_name =  m_ui.promptForName();
 }
@@ -51,7 +52,7 @@ void Player<TyPlayerUI>::chooseName ()
 template <typename TyPlayerUI>
 Stone::Color Player<TyPlayerUI>::chooseStoneColor ()
 {
-    LOGFUNCTION(cout, "Player::chooseStoneColor");
+    LOG_FUNCTION(cout, "Player::chooseStoneColor");
 
     setStoneColor(m_ui.promptForStoneColor());
 
@@ -61,7 +62,7 @@ Stone::Color Player<TyPlayerUI>::chooseStoneColor ()
 template <typename TyPlayerUI>
 const Board & Player<TyPlayerUI>::getGameBoard () const
 {
-    LOGFUNCTION(cout, "Player::getGameBoard");
+    LOG_FUNCTION(cout, "Player::getGameBoard");
 
     assert (m_pBoard != nullptr);
 
@@ -71,7 +72,7 @@ const Board & Player<TyPlayerUI>::getGameBoard () const
 template <typename TyPlayerUI>
 const string & Player<TyPlayerUI>::getName () const
 {
-    LOGFUNCTION(cout, "Player::getName");
+    LOG_FUNCTION(cout, "Player::getName");
 
     return m_name;
 }
@@ -79,7 +80,7 @@ const string & Player<TyPlayerUI>::getName () const
 template <typename TyPlayerUI>
 bool Player<TyPlayerUI>::hasStones () const
 {
-    LOGFUNCTION(cout, "Player::hasStones");
+    LOG_FUNCTION(cout, "Player::hasStones");
 
     return !m_stones.empty();
 }
@@ -87,7 +88,7 @@ bool Player<TyPlayerUI>::hasStones () const
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::setGameBoard (Board & board)
 {
-    LOGFUNCTION(cout, "Player::setGameBoard");
+    LOG_FUNCTION(cout, "Player::setGameBoard");
 
     assert(m_pBoard == nullptr);
 
@@ -97,7 +98,7 @@ void Player<TyPlayerUI>::setGameBoard (Board & board)
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::setStoneColor (Stone::Color color)
 {
-    LOGFUNCTION(cout, "Player::setStoneColor");
+    LOG_FUNCTION(cout, "Player::setStoneColor");
 
     m_stoneColor = color;
 
@@ -121,7 +122,7 @@ void Player<TyPlayerUI>::setStoneColor (Stone::Color color)
 template <typename TyPlayerUI>
 Stone::Color Player<TyPlayerUI>::getStoneColor ()
 {
-    LOGFUNCTION(cout, "Player::getStoneColor");
+    LOG_FUNCTION(cout, "Player::getStoneColor");
 
     return m_stoneColor;
 }
@@ -129,7 +130,7 @@ Stone::Color Player<TyPlayerUI>::getStoneColor ()
 template <typename TyPlayerUI>
 pair<size_t, size_t> Player<TyPlayerUI>::playStone ()
 {
-    LOGFUNCTION(cout, "Player::playStone");
+    LOG_FUNCTION(cout, "Player::playStone");
 
     assert(m_pBoard != nullptr);
 
@@ -152,7 +153,7 @@ pair<size_t, size_t> Player<TyPlayerUI>::playStone ()
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::onGameReady ()
 {
-    LOGFUNCTION(cout, "Player::onGameReady");
+    LOG_FUNCTION(cout, "Player::onGameReady");
 
     m_ui.updateGameState();
 }
@@ -160,7 +161,7 @@ void Player<TyPlayerUI>::onGameReady ()
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::onTurn ()
 {
-    LOGFUNCTION(cout, "Player::onTurn");
+    LOG_FUNCTION(cout, "Player::onTurn");
 
     m_ui.updateGameState();
 }
@@ -169,7 +170,7 @@ void Player<TyPlayerUI>::onTurn ()
 template <typename TyPlayerUI>
 size_t Player<TyPlayerUI>::calculateScore ()
 {
-    LOGFUNCTION(cout, "Player::calculateScore");
+    LOG_FUNCTION(cout, "Player::calculateScore");
 
     size_t territoryCount = 0;
 
@@ -192,7 +193,7 @@ size_t Player<TyPlayerUI>::calculateScore ()
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::lost ()
 {
-    LOGFUNCTION(cout, "Player::lost");
+    LOG_FUNCTION(cout, "Player::lost");
 
     m_ui.onLoss();
 }
@@ -200,7 +201,7 @@ void Player<TyPlayerUI>::lost ()
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::tied ()
 {
-    LOGFUNCTION(cout, "Player::tied");
+    LOG_FUNCTION(cout, "Player::tied");
 
     m_ui.onTie();
 }
@@ -208,7 +209,7 @@ void Player<TyPlayerUI>::tied ()
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::won ()
 {
-    LOGFUNCTION(cout, "Player::won");
+    LOG_FUNCTION(cout, "Player::won");
 
     m_ui.onWin();
 }

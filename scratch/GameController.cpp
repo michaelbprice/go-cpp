@@ -26,7 +26,7 @@ GameController::GameController (IPlayer & one, IPlayer & two)
   : m_playerOne(one)
   , m_playerTwo(two)
 {
-    LOGFUNCTION(cout, "GameController::GameController");
+    LOG_FUNCTION(cout, "GameController::GameController");
 
     m_playerOne.setGameBoard(m_board);
     m_playerTwo.setGameBoard(m_board);
@@ -34,7 +34,7 @@ GameController::GameController (IPlayer & one, IPlayer & two)
 
 void GameController::doGameLoop (PlayerPair & playerPair)
 {
-    LOGFUNCTION(cout, "GameController::doGameLoop");
+    LOG_FUNCTION(cout, "GameController::doGameLoop");
 
     // Counter used to determine the number of consecutive "pass" moves
     //
@@ -89,11 +89,15 @@ void GameController::doGameLoop (PlayerPair & playerPair)
 
 void GameController::doScoring ()
 {
-    LOGFUNCTION(cout, "GameController::doScoring");
+    LOG_FUNCTION(cout, "GameController::doScoring");
 
+    // Calculate scores
+    //
     size_t playerOneScore = m_playerOne.calculateScore();
     size_t playerTwoScore = m_playerTwo.calculateScore();
 
+    // Determine winner and notify players
+    //
     if (playerOneScore == playerTwoScore)
     {
         m_playerOne.tied();
@@ -113,7 +117,7 @@ void GameController::doScoring ()
 
 void GameController::start ()
 {
-    LOGFUNCTION(cout, "GameController::start");
+    LOG_FUNCTION(cout, "GameController::start");
 
     // Place the players into a 'flippable' container
     //
@@ -156,18 +160,6 @@ void GameController::start ()
     // Game is over! Time to score
     //
     doScoring();
-}
-
-void GameController::stop ()
-{
-    LOGFUNCTION(cout, "GameController::stop");
-
-}
-
-void GameController::waitForStop ()
-{
-    LOGFUNCTION(cout, "GameController::waitForStop");
-
 }
 
 } // namespace Go

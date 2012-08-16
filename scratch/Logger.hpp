@@ -11,7 +11,8 @@ enum class LogLevel : unsigned char
     kNone = 0,
     kLow = 1,
     kMedium = 2,
-    kHigh = 3
+    kHigh = 3,
+    kFirehouse = 4
 };
 
 class Logger
@@ -54,7 +55,7 @@ class Logger
 } // namespace Go
 
 #ifdef MAIN_CPP
-Go::Logger gLogger {Go::LogLevel::kHigh};
+Go::Logger gLogger {Go::LogLevel::kNone};
 #else
 extern Go::Logger gLogger;
 #endif
@@ -63,8 +64,9 @@ namespace Go {
 
 struct FunctionLogger
 {
-    FunctionLogger (std::ostream & out, const char * methodName)
-      : m_out{out}
+    FunctionLogger (LogLevel level, std::ostream & out, const char * methodName)
+      : m_level(level)
+      , m_out{out}
       , m_name{methodName}
     {
 //        m_out << std::string(' ', kIndentSpaces * nestingLevel);
@@ -79,8 +81,9 @@ struct FunctionLogger
         gLogger.log(LogLevel::kHigh, m_out, "Exiting ", m_name);
     }
 
+    LogLevel m_level = LogLevel::kHigh;
     std::ostream & m_out;
-    const char * m_name;
+    const char * m_name = nullptr;
 
     static const unsigned short kIndentSpaces = 4;
     static unsigned short nestingLevel;
@@ -90,7 +93,8 @@ struct FunctionLogger
 unsigned short FunctionLogger::nestingLevel = 0;
 #endif
 
-#define LOGFUNCTION(stream, fnname) FunctionLogger _fnLogger {stream, fnname};
+#define LOG_FUNCTION(stream, fnname) FunctionLogger _fnLogger {LogLevel::kHigh, stream, fnname};
+#define LOG_BUSY_FUNCTION(stream, fnname) FunctionLogger _fnLogger {LogLevel::kFirehouse, stream, fnname};
 
 } // namespace Go
 

@@ -19,14 +19,12 @@ class GameController final
  public:
     GameController (IPlayer & one, IPlayer & two);
 
-    void doGameLoop (PlayerPair & playerPair);
-    void doScoring ();
     void start ();
-    void stop ();
-    void waitForStop ();
 
  private:
-    void scoreGame ();
+
+    void doGameLoop (PlayerPair & playerPair);
+    void doScoring ();
 };
 
 } // namespace Go

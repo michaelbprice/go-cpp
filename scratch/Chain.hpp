@@ -1,27 +1,29 @@
 #ifndef __CHAIN_HPP_
 #define __CHAIN_HPP_
 
-#include <unordered_set>
 #include <unordered_map>
-#include <utility>
+//#include <utility>
 #include "Point.hpp"
 #include "Stone.hpp"
 
 namespace Go {
 
-class Point;
+// Forward declarations
+//
+//#include "Stone.fwd.hpp"
+//class Point;
 class Board;
-//class Stone;
-enum class Stone::Color : char;
 
 class Chain
 {
  private:
-    std::unordered_map<Stone::Color, ConstPointSet> m_chainAndBorders;
+    std::unordered_map<Stone::Color, ConstPointSet> m_chainAndNeighbors;
     Stone::Color m_color;
     const Point & m_startPoint;
 
  public:
+    struct PointVisitedAlreadyException { };
+
     Chain (const Point & startPoint, const Board & board, ConstPointSet * pointsToIgnore);
     Chain (Stone::Color stoneColor, const Point & startPoint, const Board & board, ConstPointSet * pointsToIgnore);
 
@@ -46,7 +48,7 @@ class Chain
     template <typename Fn>
     void foreach (Stone::Color color, Fn && fn)
     {
-        for (auto & p : m_chainAndBorders[color])
+        for (auto & p : m_chainAndNeighbors[color])
             fn(*p);
     }
 

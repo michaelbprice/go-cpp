@@ -19,13 +19,13 @@ void printBoard (const Go::Board & board)
 {
     using namespace Go;
 
-    std::cout << kBorderTopLeftChar << std::string((19*2)+1, kBorderTopChar) << kBorderTopRightChar << std::endl;
+    std::cout << kBorderTopLeftChar << std::string((9*2)+1, kBorderTopChar) << kBorderTopRightChar << std::endl;
 
 
-    for (size_t i = 0; i < 19; ++i)
+    for (size_t i = 0; i < 9; ++i)
     {
         std::cout << kBorderLeftChar;
-        for (size_t j = 0; j < 19; ++j)
+        for (size_t j = 0; j < 9; ++j)
         {
             std::cout << kPointSpacerChar;
             switch (board.getStoneColorAt(i, j))
@@ -38,7 +38,7 @@ void printBoard (const Go::Board & board)
         std::cout << kPointSpacerChar << kBorderRightChar << std::endl;
     }
 
-    std::cout << kBorderBottomLeftChar << std::string((19*2)+1, kBorderBottomChar) << kBorderBottomRightChar << std::endl;
+    std::cout << kBorderBottomLeftChar << std::string((9*2)+1, kBorderBottomChar) << kBorderBottomRightChar << std::endl;
 }
 
 namespace Go

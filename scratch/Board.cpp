@@ -1,11 +1,10 @@
 #include <cassert>
-#include <functional>
 #include <iostream>
 #include <memory>
-#include <unordered_set>
 #include <utility>
 
 #include "Board.hpp"
+#include "Chain.hpp"
 #include "Logger.hpp"
 #include "Stone.hpp"
 
@@ -14,9 +13,9 @@ using namespace std;
 namespace Go {
 
 Board::Board ()
-  : m_ko({false, m_points[0][0]})
+  : m_koState({false, m_points[0][0]})
 {
-    LOGFUNCTION(cout, "Board::Board");
+    LOG_FUNCTION(cout, "Board::Board");
 
     for (size_t row = 0; row < BOARD_SIZE; ++row)
     {
@@ -28,9 +27,76 @@ Board::Board ()
     }
 }
 
+bool Board::doesKoRuleApply (const Chain & potentiallyCapturedChain) const
+{
+    LOG_FUNCTION(cout, "Board::doesKoRuleApply");
+
+    // IF the potentially captured chain has only one stone AND
+    // the potentially captured stone was the stone the opposing player just played (m_koState.second) AND
+    // the previously played stone had captured a single stone (m_koState.first)
+    // THEN the Ko rule applies and the move is invalid.
+    //
+    if (potentiallyCapturedChain.size() == 1)
+    {
+        if (m_koState.first && potentiallyCapturedChain.containsPoint(m_koState.second))
+        {
+            gLogger.log(LogLevel::kMedium, cout, "The Ko rule was enforced"); // " for point ", m_koState.second);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+std::vector<Chain> Board::getAllEmptyChains ()
+{
+    LOG_FUNCTION(cout, "Board::getAllEmptyChains");
+
+    std::vector<Chain> emptyChains;
+
+    // A set of points that we've already examined. This helps prevents some
+    // bad recursion and keeps a chain from being "found" once for each stone
+    // in the chain.
+    //
+    ConstPointSet alreadyVisited;
+
+    for (size_t row = 0; row < m_points.size(); ++row)
+    {
+        for (size_t column = 0; column < m_points[row].size(); ++column)
+        {
+            const Point & point = m_points[row][column];
+
+            // We are only looking for points without a stone, so get out
+            // of here if there is a stone on this point
+            //
+            if (point.getStoneColor() != Stone::Color::NONE)
+                continue;
+
+            // If the point we are considering has already been visited,
+            // then Chain's ctor will throw a PointVisitedAlreadyException
+            // object. We can safely swallow that exception and move on
+            // to the next point.
+            //
+            try
+            {
+                // TODO: figure out why this didn't work... emptyChains.emplace_back(Stone::Color::NONE, point, *this, &alreadyVisited);
+                Chain chain(Stone::Color::NONE, point, *this, &alreadyVisited);
+                emptyChains.push_back(chain);
+                gLogger.log(LogLevel::kMedium, cout, "Discovered empty chain"); // " : ", chain);
+            }
+            catch (const Chain::PointVisitedAlreadyException & ex)
+            {
+                gLogger.log(LogLevel::kHigh, cout, "Skipping point"); // " : ", point);
+            }
+        }
+    }
+    
+    return emptyChains;
+}
+
 const Point & Board::getPointAbove (const Point & point) const
 {
-    LOGFUNCTION(cout, "Board::getPointAbove");
+    LOG_BUSY_FUNCTION(cout, "Board::getPointAbove");
 
     if (point.coordinates.row - 1 < BOARD_SIZE)
         return m_points[point.coordinates.row - 1][point.coordinates.column];
@@ -40,7 +106,7 @@ const Point & Board::getPointAbove (const Point & point) const
 
 const Point & Board::getPointBelow (const Point & point) const
 {
-    LOGFUNCTION(cout, "Board::getPointBelow");
+    LOG_BUSY_FUNCTION(cout, "Board::getPointBelow");
 
     if (point.coordinates.row + 1 < BOARD_SIZE)
         return m_points[point.coordinates.row + 1][point.coordinates.column];
@@ -50,7 +116,7 @@ const Point & Board::getPointBelow (const Point & point) const
 
 const Point & Board::getPointLeft (const Point & point) const
 {
-    LOGFUNCTION(cout, "Board::getPointLeft");
+    LOG_BUSY_FUNCTION(cout, "Board::getPointLeft");
 
     if (point.coordinates.column - 1 < BOARD_SIZE)
         return m_points[point.coordinates.row][point.coordinates.column - 1];
@@ -60,7 +126,7 @@ const Point & Board::getPointLeft (const Point & point) const
 
 const Point & Board::getPointRight (const Point & point) const
 {
-    LOGFUNCTION(cout, "Board::getPointRight");
+    LOG_BUSY_FUNCTION(cout, "Board::getPointRight");
 
     if (point.coordinates.column + 1 < BOARD_SIZE)
         return m_points[point.coordinates.row][point.coordinates.column + 1];
@@ -70,145 +136,96 @@ const Point & Board::getPointRight (const Point & point) const
 
 Stone::Color Board::getStoneColorAt (size_t x, size_t y) const
 {
-    //LOGFUNCTION(cout, "Board::getStoneColorAt");
+    LOG_BUSY_FUNCTION(cout, "Board::getStoneColorAt");
 
     return m_points[x][y].getStoneColor();
 }
 
 bool Board::isOccupiedPoint (size_t x, size_t y)
 {
-    LOGFUNCTION(cout, "Board::isOccupiedPoint");
+    LOG_FUNCTION(cout, "Board::isOccupiedPoint");
 
     return !(m_points[x][y].canPlayStone());
 }
 
-bool Board::isLibertyPoint (size_t x, size_t y)
-{
-    LOGFUNCTION(cout, "Board::isLibertyPoint");
-
-    return false;
-}
-
-std::vector<Chain> Board::getAllEmptyChains ()
-{
-    LOGFUNCTION(cout, "Board::getAllEmptyChains");
-
-    std::vector<Chain> emptyChains;
-    ConstPointSet alreadyVisited;
-
-    for (size_t row = 0; row < m_points.size(); ++row)
-    {
-        for (size_t column = 0; column < m_points[row].size(); ++column)
-        {
-            const Point & point = m_points[row][column];
-
-            if (point.getStoneColor() != Stone::Color::NONE)
-                continue;
-
-            try
-            {
-                //emptyChains.emplace_back(Stone::Color::NONE, point, *this, &alreadyVisited);
-                Chain chain(Stone::Color::NONE, point, *this, &alreadyVisited);
-                emptyChains.push_back(chain);
-//std::cout << "Empty chain starting at [" << row << "," << column << "]" << std::endl;
-            }
-            catch (int)
-            {
-            }
-        }
-    }
-    
-    return emptyChains;
-}
-
-bool Board::placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone)
-{
-    LOGFUNCTION(cout, "Board::placeStoneAt");
-
-    assert(stone.get() != nullptr);
-
-    m_ko.second = m_points[x][y];
-
-    m_points[x][y].playStone(std::move(stone));
-
-    return true;
-}
-
-size_t Board::removeCapturedStones (Stone::Color colorToCapture)
-{
-    LOGFUNCTION(cout, "Board::removeCapturedStones");
-
-    size_t captureCount = 0;
-
-    ConstPointSet alreadyVisited;
-
-    for (size_t row = 0; row < m_points.size(); ++row)
-    {
-        for (size_t column = 0; column < m_points[row].size(); ++column)
-        {
-            try
-            {
-                Chain currentChain {m_points[row][column], *this, &alreadyVisited};
-
-                if (currentChain.color() == colorToCapture && currentChain.libertyCount() == 0)
-                {
-                    captureCount += currentChain.size();
-
-                    currentChain.foreach([this](const Point & point)
-                    {
-                        m_points[point.coordinates.row][point.coordinates.column].removeStone();
-                    }); 
-                }
-            }
-            catch (int)
-            {
-            }
-        }
-    }
-
-    // Remember this state for the Ko rule
-    //
-    m_ko.first = (captureCount == 1);
-
-    return captureCount;
-}
-
 bool Board::isValidMove (Stone::Color stoneColor, size_t row, size_t column) const
 {
-    LOGFUNCTION(cout, "Board::isValidMove");
+    LOG_FUNCTION(cout, "Board::isValidMove");
 
+    // Easy Case: If there is already a stone there, then this cannot be a
+    // valid move.
+    //
     if (!m_points[row][column].canPlayStone())
     {
         return false;
     }
 
+
+    // Hard Case: If the spot we intend to play at would result in an
+    // immediate capture of our stones, then the move is disallowed.
+    // This is called the suicide rule. The one exception is in the case
+    // where we would also capture one or more stones from the opponent.
+    // Of course, that exception is also governed by the 'Ko' rule
+    //
+
+    // Caclulate what the chain would look like if the stone were placed
+    // at the desired location
+    //
     Chain potentialChain {stoneColor, m_points[row][column], *this, nullptr};
 
+    // A set of points that we've already examined. This helps prevents some
+    // bad recursion and keeps a chain from being "found" once for each stone
+    // in the chain.
+    //
     ConstPointSet alreadyVisited;
 
     bool wouldCaptureOpponentChain = false;
 
-
+    // For each point on the border of the potential chain that is occupied
+    // by an opponent's stone, calculate it's chain.
+    //
+    // If the chain only has a single liberty (which would promptly be
+    // taken by this move) and the 'Ko' rule does not apply, then we would
+    // in fact capture at least one opponent stone.
+    // 
     potentialChain.foreach(getOpposingColor(stoneColor),
     [this, &alreadyVisited, &wouldCaptureOpponentChain](const Point & point)
     {
-        LOGFUNCTION(cout, "Board::lambda_wouldCapture");
+        LOG_FUNCTION(cout, "Board::lambda_wouldCapture");
 
+        bool opponentThreatened = false;
+
+        // If the point we are considering has already been visited,
+        // then Chain's ctor will throw a PointVisitedAlreadyException
+        // object. We can safely swallow that exception and move on
+        // to the next point.
+        //
         try
         {
             Chain opponentChain {point, *this, &alreadyVisited};
 
+            gLogger.log(LogLevel::kMedium, cout, "Discovered chain"); // " : ", chain);
+
+            // If this move would take the last liberty from a chain of the opponent and
+            // if the 'Ko' rule doesn't apply, then we would indeed capture
+            // their stones
+            //
             if (opponentChain.libertyCount() == 1)
             {
                 if (!doesKoRuleApply(opponentChain))
                     wouldCaptureOpponentChain = true;
             }
         }
-        catch (int)
+        catch (const Chain::PointVisitedAlreadyException & ex)
         {
+            gLogger.log(LogLevel::kHigh, cout, "Skipping point"); // " : ", point);
         }
     });
 
+    // If making this move would result in our chain not having any liberties,
+    // it is only valid if we end up capturing an opposing chain (per the
+    // restrictions from above); otherwise, it is a valid move.
+    //
     if (potentialChain.libertyCount() == 0)
     {
         return wouldCaptureOpponentChain; 
@@ -217,17 +234,78 @@ bool Board::isValidMove (Stone::Color stoneColor, size_t row, size_t column) con
     return true;
 }
 
-bool Board::doesKoRuleApply (const Chain & chain) const
+void Board::placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone)
 {
-    LOGFUNCTION(cout, "Board::doesKoRuleApply");
+    LOG_FUNCTION(cout, "Board::placeStoneAt");
 
-    if (chain.size() == 1)
+    assert(stone.get() != nullptr);
+
+    // Remember this point for implementing the 'Ko' rule
+    //
+    m_koState.second = m_points[x][y];
+
+    // Actually play the stone
+    //
+    m_points[x][y].playStone(std::move(stone));
+}
+
+size_t Board::removeCapturedStones (Stone::Color colorToCapture)
+{
+    LOG_FUNCTION(cout, "Board::removeCapturedStones");
+
+    size_t captureCount = 0;
+
+    // A set of points that we've already examined. This helps prevents some
+    // bad recursion and keeps a chain from being "found" once for each stone
+    // in the chain.
+    //
+    ConstPointSet alreadyVisited;
+
+    for (size_t row = 0; row < m_points.size(); ++row)
     {
-        if (m_ko.first && chain.containsPoint(m_ko.second))
-            return true;
+        for (size_t column = 0; column < m_points[row].size(); ++column)
+        {
+            // If the point we are considering has already been visited,
+            // then Chain's ctor will throw a PointVisitedAlreadyException
+            // object. We can safely swallow that exception and move on
+            // to the next point.
+            //
+            try
+            {
+                Chain currentChain {m_points[row][column], *this, &alreadyVisited};
+
+                gLogger.log(LogLevel::kMedium, cout, "Discovered chain"); // " : ", chain);
+
+                // If the chain we are looking at is the color we should consider capturing and
+                // the chain has no liberties, then capture it
+                // 
+                if (currentChain.color() == colorToCapture && currentChain.libertyCount() == 0)
+                {
+                    captureCount += currentChain.size();
+
+                    // For each point in the chain, remove the stone from the board
+                    // at those coordniates
+                    //
+                    currentChain.foreach([this](const Point & point)
+                    {
+                        LOG_BUSY_FUNCTION(cout, "Chain::removeCapturedStones::lambda_doStoneRemoval");
+                        m_points[point.coordinates.row][point.coordinates.column].removeStone();
+                    }); 
+                }
+            }
+            catch (const Chain::PointVisitedAlreadyException & ex)
+            {
+                gLogger.log(LogLevel::kHigh, cout, "Skipping point"); // " : ", point);
+            }
+        }
     }
 
-    return false;
+    // If we ended up only capturing one stone, the 'Ko' rule might affect
+    // the next move, so remember that fact!
+    //
+    m_koState.first = (captureCount == 1);
+
+    return captureCount;
 }
 
 } // namespace Go

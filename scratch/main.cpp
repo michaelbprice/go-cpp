@@ -13,11 +13,7 @@ int main (int argc, char * argv[])
 {
     using namespace std;
 
-    //assert(argc > 0 && argc <= 2);
-
-    LOGFUNCTION(cout, "main()");
-
-//    logger.log(LogLevel::kHigh, cout, "Entering main() function"); 
+    LOG_FUNCTION(cout, "main()");
 
     unique_ptr<IPlayer> one{new Player<ConsoleUI>{"Player 1"}};
     unique_ptr<IPlayer> two{new Player<ConsoleUI>{"Player 2"}};
@@ -25,9 +21,6 @@ int main (int argc, char * argv[])
     GameController controller(*one, *two);
 
     controller.start();
-    controller.waitForStop();
-
-//    logger.log(LogLevel::kHigh, cout, "Exiting main() function"); 
 
     return 0;
 }
