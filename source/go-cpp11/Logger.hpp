@@ -12,7 +12,7 @@ enum class LogLevel : unsigned char
     kLow = 1,
     kMedium = 2,
     kHigh = 3,
-    kFirehouse = 4
+    kFirehose = 4
 };
 
 class Logger
@@ -55,7 +55,7 @@ class Logger
 } // namespace Go
 
 #ifdef MAIN_CPP
-Go::Logger gLogger {Go::LogLevel::kNone};
+Go::Logger gLogger {Go::LogLevel::kHigh};
 #else
 extern Go::Logger gLogger;
 #endif
@@ -65,36 +65,34 @@ namespace Go {
 struct FunctionLogger
 {
     FunctionLogger (LogLevel level, std::ostream & out, const char * methodName)
-      : m_level(level)
+      : m_level{level}
       , m_out{out}
       , m_name{methodName}
     {
-//        m_out << std::string(' ', kIndentSpaces * nestingLevel);
-        gLogger.log(LogLevel::kHigh, m_out, "Entering ", m_name);
+        gLogger.log(m_level, m_out, std::string(kIndention * nestingLevel, '='), ">> ", m_name);
         ++nestingLevel;
     }
 
     ~FunctionLogger ()
     {
         --nestingLevel;
-//        m_out << std::string(' ', kIndentSpaces * nestingLevel);
-        gLogger.log(LogLevel::kHigh, m_out, "Exiting ", m_name);
+        gLogger.log(m_level, m_out, "<<", std::string(kIndention * nestingLevel, '='), " ", m_name);
     }
 
     LogLevel m_level = LogLevel::kHigh;
     std::ostream & m_out;
     const char * m_name = nullptr;
 
-    static const unsigned short kIndentSpaces = 4;
+    static const unsigned short kIndention = 2;
     static unsigned short nestingLevel;
 };
 
 #ifdef MAIN_CPP
-unsigned short FunctionLogger::nestingLevel = 0;
+unsigned short FunctionLogger::nestingLevel = 1;
 #endif
 
 #define LOG_FUNCTION(stream, fnname) FunctionLogger _fnLogger {LogLevel::kHigh, stream, fnname};
-#define LOG_BUSY_FUNCTION(stream, fnname) FunctionLogger _fnLogger {LogLevel::kFirehouse, stream, fnname};
+#define LOG_BUSY_FUNCTION(stream, fnname) FunctionLogger _fnLogger {LogLevel::kFirehose, stream, fnname};
 
 } // namespace Go
 

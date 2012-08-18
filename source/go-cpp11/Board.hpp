@@ -7,13 +7,13 @@
 
 #include "Point.hpp"
 
-namespace Go {
-
-
 // Forward declarations
 //
+#include "Chain.fwd.hpp"
 #include "Stone.fwd.hpp"
-class Chain;
+
+
+namespace Go {
 	
 class Board final
 {
@@ -37,11 +37,11 @@ class Board final
     Board ();
 
     std::vector<Chain> getAllEmptyChains ();
-    Stone::Color getStoneColorAt (size_t x, size_t y) const;
+    StoneColor getStoneColorAt (size_t x, size_t y) const;
     bool isOccupiedPoint (size_t x, size_t y);
-    bool isValidMove (Stone::Color color, size_t row, size_t column) const;
+    bool isValidMove (StoneColor color, size_t row, size_t column) const;
     void placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone);
-    size_t removeCapturedStones (Stone::Color colorToCapture);
+    size_t removeCapturedStones (StoneColor colorToCapture);
 
     template <typename FnOnVisit>
     void visitNeighboringPoints (const Point & point, FnOnVisit && onVisitFn) const

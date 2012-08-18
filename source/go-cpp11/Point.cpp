@@ -8,10 +8,10 @@ using namespace std;
 
 namespace Go {
 
-Stone::Color Point::getStoneColor () const
+StoneColor Point::getStoneColor () const
 {
     if (m_stone.get() == nullptr)
-        return Stone::Color::NONE;
+        return StoneColor::NONE;
 
     return m_stone->getColor();
 }

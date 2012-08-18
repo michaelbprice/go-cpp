@@ -50,7 +50,7 @@ void Player<TyPlayerUI>::chooseName ()
 }
 
 template <typename TyPlayerUI>
-Stone::Color Player<TyPlayerUI>::chooseStoneColor ()
+StoneColor Player<TyPlayerUI>::chooseStoneColor ()
 {
     LOG_FUNCTION(cout, "Player::chooseStoneColor");
 
@@ -96,7 +96,7 @@ void Player<TyPlayerUI>::setGameBoard (Board & board)
 }
 
 template <typename TyPlayerUI>
-void Player<TyPlayerUI>::setStoneColor (Stone::Color color)
+void Player<TyPlayerUI>::setStoneColor (StoneColor color)
 {
     LOG_FUNCTION(cout, "Player::setStoneColor");
 
@@ -104,7 +104,7 @@ void Player<TyPlayerUI>::setStoneColor (Stone::Color color)
 
     size_t numberOfStones = 0;
 
-    if (m_stoneColor == Stone::Color::BLACK)
+    if (m_stoneColor == StoneColor::BLACK)
     {
         numberOfStones = Stone::kDefaultBlackCount;
     }
@@ -120,7 +120,7 @@ void Player<TyPlayerUI>::setStoneColor (Stone::Color color)
 }
 
 template <typename TyPlayerUI>
-Stone::Color Player<TyPlayerUI>::getStoneColor ()
+StoneColor Player<TyPlayerUI>::getStoneColor ()
 {
     LOG_FUNCTION(cout, "Player::getStoneColor");
 
@@ -176,9 +176,9 @@ size_t Player<TyPlayerUI>::calculateScore ()
 
     for (auto & chain : m_pBoard->getAllEmptyChains())
     {
-        assert(chain.color() == Stone::Color::NONE);
+        assert(chain.color() == StoneColor::NONE);
 
-        Stone::Color opponentColor = getOpposingColor(m_stoneColor);
+        StoneColor opponentColor = getOpposingColor(m_stoneColor);
 
         if (chain.borderCountOf(opponentColor) > 0)
             continue;

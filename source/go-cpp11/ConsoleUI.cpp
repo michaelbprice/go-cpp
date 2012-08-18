@@ -1,8 +1,14 @@
 #include "ConsoleUI.hpp"
+
 #include <iostream>
 #include <cassert>
 #include <string>
 #include <utility>
+
+#include "Board.hpp"
+#include "IPlayer.hpp"
+#include "Stone.hpp"
+
 
 static const unsigned char kBorderTopLeftChar = '+';
 static const unsigned char kBorderTopRightChar = '+';
@@ -30,9 +36,9 @@ void printBoard (const Go::Board & board)
             std::cout << kPointSpacerChar;
             switch (board.getStoneColorAt(i, j))
             {
-             case Stone::Color::NONE:  std::cout << kPointChar; break;
-             case Stone::Color::BLACK: std::cout << 'B'; break; //'○'; break;
-             case Stone::Color::WHITE: std::cout << 'W'; break; //'◙'; break;
+             case StoneColor::NONE:  std::cout << kPointChar; break;
+             case StoneColor::BLACK: std::cout << 'B'; break; //'○'; break;
+             case StoneColor::WHITE: std::cout << 'W'; break; //'◙'; break;
             }
         }
         std::cout << kPointSpacerChar << kBorderRightChar << std::endl;
@@ -90,7 +96,7 @@ std::string ConsoleUI::promptForName ()
     return playerName;
 }
 
-Stone::Color ConsoleUI::promptForStoneColor ()
+StoneColor ConsoleUI::promptForStoneColor ()
 {
     std::cout << m_player.getName() << ", would you like to play as Black (0) or White (1): ";
 
@@ -99,7 +105,7 @@ Stone::Color ConsoleUI::promptForStoneColor ()
 
     assert(choice == 0 || choice == 1);
 
-    return (choice == 0) ? Stone::Color::BLACK : Stone::Color::WHITE;
+    return (choice == 0) ? StoneColor::BLACK : StoneColor::WHITE;
 }
 
 void ConsoleUI::updateGameState ()

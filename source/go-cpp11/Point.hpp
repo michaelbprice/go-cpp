@@ -22,7 +22,7 @@ class Point final
 
     Coords coordinates;
 
-    Stone::Color getStoneColor () const;
+    StoneColor getStoneColor () const;
 
     void playStone (std::unique_ptr<Stone> stone);
 

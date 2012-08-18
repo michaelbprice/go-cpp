@@ -3,17 +3,17 @@
 namespace Go
 {
 
-Stone::Color Stone::getColor ()
+StoneColor Stone::getColor ()
 {
     return m_color;
 }
 
-Stone::Color getOpposingColor (Stone::Color color)
+StoneColor getOpposingColor (StoneColor color)
 {
-    if (color == Stone::Color::NONE)
+    if (color == StoneColor::NONE)
         return color;
 
-    return (color == Stone::Color::BLACK) ? Stone::Color::WHITE : Stone::Color::BLACK;
+    return (color == StoneColor::BLACK) ? StoneColor::WHITE : StoneColor::BLACK;
 }
 
 }

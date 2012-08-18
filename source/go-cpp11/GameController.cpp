@@ -1,11 +1,11 @@
+#include "GameController.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <iostream>
 #include <utility>
-
-#include "GameController.hpp"
+#include "IPlayer.hpp"
 #include "Logger.hpp"
-#include "Player.hpp"
 #include "Stone.hpp"
 
 using namespace std;
@@ -136,13 +136,13 @@ void GameController::start ()
     //
     gLogger.log(LogLevel::kMedium, cout, "Player 1 picking color");
 
-    Stone::Color colorOne = m_playerOne.chooseStoneColor();
+    StoneColor colorOne = m_playerOne.chooseStoneColor();
     m_playerTwo.setStoneColor(getOpposingColor(colorOne));
 
 
     // Reorder the players according to the stone choices
     //
-    if (Stone::Color::WHITE == colorOne)
+    if (StoneColor::WHITE == colorOne)
         swap(playerPair.first, playerPair.second);
 
 

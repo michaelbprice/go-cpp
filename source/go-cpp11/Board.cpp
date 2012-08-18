@@ -69,7 +69,7 @@ std::vector<Chain> Board::getAllEmptyChains ()
             // We are only looking for points without a stone, so get out
             // of here if there is a stone on this point
             //
-            if (point.getStoneColor() != Stone::Color::NONE)
+            if (point.getStoneColor() != StoneColor::NONE)
                 continue;
 
             // If the point we are considering has already been visited,
@@ -79,8 +79,8 @@ std::vector<Chain> Board::getAllEmptyChains ()
             //
             try
             {
-                // TODO: figure out why this didn't work... emptyChains.emplace_back(Stone::Color::NONE, point, *this, &alreadyVisited);
-                Chain chain(Stone::Color::NONE, point, *this, &alreadyVisited);
+                // TODO: figure out why this didn't work... emptyChains.emplace_back(StoneColor::NONE, point, *this, &alreadyVisited);
+                Chain chain(StoneColor::NONE, point, *this, &alreadyVisited);
                 emptyChains.push_back(chain);
                 gLogger.log(LogLevel::kMedium, cout, "Discovered empty chain"); // " : ", chain);
             }
@@ -134,7 +134,7 @@ const Point & Board::getPointRight (const Point & point) const
     return point;
 }
 
-Stone::Color Board::getStoneColorAt (size_t x, size_t y) const
+StoneColor Board::getStoneColorAt (size_t x, size_t y) const
 {
     LOG_BUSY_FUNCTION(cout, "Board::getStoneColorAt");
 
@@ -148,7 +148,7 @@ bool Board::isOccupiedPoint (size_t x, size_t y)
     return !(m_points[x][y].canPlayStone());
 }
 
-bool Board::isValidMove (Stone::Color stoneColor, size_t row, size_t column) const
+bool Board::isValidMove (StoneColor stoneColor, size_t row, size_t column) const
 {
     LOG_FUNCTION(cout, "Board::isValidMove");
 
@@ -188,7 +188,7 @@ bool Board::isValidMove (Stone::Color stoneColor, size_t row, size_t column) con
     // taken by this move) and the 'Ko' rule does not apply, then we would
     // in fact capture at least one opponent stone.
     // 
-    potentialChain.foreach(getOpposingColor(stoneColor),
+    potentialChain.forEachSurroundingPoint(getOpposingColor(stoneColor),
     [this, &alreadyVisited, &wouldCaptureOpponentChain](const Point & point)
     {
         LOG_FUNCTION(cout, "Board::lambda_wouldCapture");
@@ -249,7 +249,7 @@ void Board::placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone)
     m_points[x][y].playStone(std::move(stone));
 }
 
-size_t Board::removeCapturedStones (Stone::Color colorToCapture)
+size_t Board::removeCapturedStones (StoneColor colorToCapture)
 {
     LOG_FUNCTION(cout, "Board::removeCapturedStones");
 
@@ -286,7 +286,7 @@ size_t Board::removeCapturedStones (Stone::Color colorToCapture)
                     // For each point in the chain, remove the stone from the board
                     // at those coordniates
                     //
-                    currentChain.foreach([this](const Point & point)
+                    currentChain.forEachPoint([this](const Point & point)
                     {
                         LOG_BUSY_FUNCTION(cout, "Chain::removeCapturedStones::lambda_doStoneRemoval");
                         m_points[point.coordinates.row][point.coordinates.column].removeStone();

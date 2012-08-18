@@ -11,6 +11,15 @@
 
 namespace Go
 {
+
+enum class StoneColor : unsigned char
+{
+    NONE,
+    BLACK,
+    WHITE
+};
+
+StoneColor getOpposingColor (StoneColor color);
 	
 class Stone final
 {
@@ -18,44 +27,37 @@ class Stone final
     static const size_t kDefaultBlackCount = 21;
     static const size_t kDefaultWhiteCount = 20;
 
- 	enum class Color : unsigned char
- 	{
-                NONE,
- 		BLACK,
- 		WHITE
- 	};
-
  private:
- 	Color m_color;
+    StoneColor m_color;
 
  public:
- 	Stone (Color color) : m_color(color) { }
- 	~Stone () = default;
+    Stone (StoneColor color) : m_color(color) { }
+    ~Stone () = default;
 
- 	Stone(const Stone&) = delete;
- 	Stone & operator= (const Stone&) = delete;
+    Stone(const Stone&) = delete;
+    Stone & operator= (const Stone&) = delete;
 
- 	Stone(Stone && other) = default;
- 	Stone & operator= (Stone && other) = default;
+    Stone(Stone && other) = default;
+    Stone & operator= (Stone && other) = default;
 
-    Stone::Color getColor ();
+    StoneColor getColor ();
 };
 
 using Stones = std::vector<std::unique_ptr<Stone>>;
 
-Stone::Color getOpposingColor (Stone::Color color);
-
 }
 
+/*
 namespace std
 {
-  template <> struct hash<Go::Stone::Color>
+  template <> struct hash<Go::StoneColor>
   {
-    size_t operator() (const Go::Stone::Color & c) const
+    size_t operator() (const Go::StoneColor & c) const
     {
       return hash<char>()(static_cast<char>(c));
     }
   };
 }
+*/
 
 #endif /* end of include guard: INCL_STONE_HPP__ */

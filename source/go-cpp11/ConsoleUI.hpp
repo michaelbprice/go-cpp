@@ -1,14 +1,15 @@
 #ifndef INCL_CONSOLEUI_HPP__
 #define INCL_CONSOLEUI_HPP__
 
-#include "Player.hpp"
-#include "Stone.hpp"
 #include <string>
 #include <utility>
 
+#include "Player.fwd.hpp"
+#include "Stone.fwd.hpp"
+
 namespace Go
 {
-	
+
 class ConsoleUI
 {
  private:
@@ -33,7 +34,7 @@ class ConsoleUI
 
     std::pair<size_t, size_t> promptForMove ();
     std::string promptForName ();
-    Stone::Color promptForStoneColor ();
+    StoneColor promptForStoneColor ();
     void updateGameState ();
 };
 

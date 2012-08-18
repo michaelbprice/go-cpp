@@ -3,11 +3,9 @@
 
 #include "Board.hpp"
 
-namespace Go {
-
-// Forward Declarations
-//
 #include "Player.fwd.hpp"
+
+namespace Go {
 
 class GameController final
 {
