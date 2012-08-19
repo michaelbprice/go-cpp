@@ -1,13 +1,9 @@
 #ifndef INCL_STONE_HPP__
 #define INCL_STONE_HPP__
 
+#include <iosfwd>
+#include <memory>
 #include <vector>
-#include <unordered_map>
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-///////////////////////////////////////////////////////////////////////////////
 
 namespace Go
 {
@@ -28,7 +24,7 @@ class Stone final
     static const size_t kDefaultWhiteCount = 20;
 
  private:
-    StoneColor m_color;
+    StoneColor m_color = StoneColor::NONE;
 
  public:
     Stone (StoneColor color) : m_color(color) { }
@@ -47,17 +43,7 @@ using Stones = std::vector<std::unique_ptr<Stone>>;
 
 }
 
-/*
-namespace std
-{
-  template <> struct hash<Go::StoneColor>
-  {
-    size_t operator() (const Go::StoneColor & c) const
-    {
-      return hash<char>()(static_cast<char>(c));
-    }
-  };
-}
-*/
+ostream & operator<< (ostream & out, const Go::Stone & stone);
+
 
 #endif /* end of include guard: INCL_STONE_HPP__ */

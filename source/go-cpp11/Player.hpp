@@ -5,6 +5,7 @@
 #include <utility>
 #include "IPlayer.hpp"
 #include "Board.fwd.hpp"
+#include "Point.fwd.hpp"
 #include "Stone.fwd.hpp"
 
 namespace Go {
@@ -13,44 +14,41 @@ template <typename TyPlayerUI>
 class Player final : public IPlayer
 {
  private:
-    std::string m_name;
+    TyPlayerUI m_ui;
 
     Board * m_pBoard = nullptr; // Non-owning pointer... do NOT delete!
 
-    Stones m_stones;
     StoneColor m_stoneColor = StoneColor::NONE;
+    std::string m_name;
+    Stones m_stones;
     size_t m_capturedCount = 0;
  	
-    TyPlayerUI m_ui;
-
  public:
-    Player () = delete;
+    Player (const std::string & name);
+    ~Player () = default;
+
     Player (const Player &) = delete;
     Player & operator= (const Player &) = delete;
 
-    ~Player () = default;
     Player (Player &&) = default;
     Player & operator= (Player &&) = default;
 
-    Player (const std::string & name);
-
     virtual void addToCaptured (size_t numCaptured) override;
+    virtual size_t calculateScore () override;
     virtual void chooseName () override;
     virtual StoneColor chooseStoneColor () override;
     virtual const Board & getGameBoard () const override;
     virtual const std::string & getName () const override;
+    virtual StoneColor getStoneColor () override;
     virtual bool hasStones () const override;
+    virtual void notifyGameReady () override;
+    virtual void notifyLost () override;
+    virtual void notifyTied () override;
+    virtual void notifyTurn () override;
+    virtual void notifyWon () override;
     virtual void setGameBoard (Board & board) override;
     virtual void setStoneColor (StoneColor color) override;
-    virtual StoneColor getStoneColor () override;
-    virtual std::pair<size_t, size_t> playStone () override;
-    virtual void onGameReady () override;
-    virtual void onTurn () override;
-
-    virtual size_t calculateScore () override;
-    virtual void lost () override;
-    virtual void won () override;
-    virtual void tied () override;
+    virtual PointCoords playStone () override;
 };
 
 } // namespace Go

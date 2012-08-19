@@ -1,26 +1,29 @@
 #ifndef INCL_POINT_HPP__
 #define INCL_POINT_HPP__
 
+#include <functional>
+#include <iosfwd>
 #include <memory>
 #include <unordered_set>
-#include "Stone.hpp"
+#include "Stone.fwd.hpp"
 
 namespace Go {
 
+struct PointCoords final
+{
+    size_t row = 0;
+    size_t column = 0;
+};
+
 class Point final
 {
+ friend ostream & operator<< (ostream & out, const Point & point);
+
  private:
     std::unique_ptr<Stone> m_stone = nullptr;
-    
 
  public:
-    struct Coords
-    {
-        size_t row = 0;
-        size_t column = 0;
-    };
-
-    Coords coordinates;
+    PointCoords coordinates;
 
     StoneColor getStoneColor () const;
 
@@ -34,22 +37,12 @@ class Point final
 using PointSet = std::unordered_set<Point*>;
 using ConstPointSet = std::unordered_set<const Point*>;
 
+using std::function<void(const Point &)> = PointVisitorFn;
+
 } // namespace Go
 
-/*
-namespace std
-{
-  template <> struct hash<Go::Point&>
-  {
-    size_t operator() (const Go::Point & p) const
-    {
-      return hash<decltype(&p)>()(&p);
-    }
-  };
-}
+ostream & operator<< (ostream & out, const Go::PointCoords & coords);
+ostream & operator<< (ostream & out, const Go::Point & point);
 
-bool operator == (const Go::Point & l, const Go::Point & r)
-{  return &l == &r; }
-*/
 
 #endif /* end of include guard: INCL_POINT_HPP__ */

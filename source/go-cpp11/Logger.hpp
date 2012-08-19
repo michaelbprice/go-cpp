@@ -1,7 +1,7 @@
-#ifndef __LOGGER_HPP
-#define __LOGGER_HPP
+#ifndef INCL_LOGGER_HPP__
+#define INCL_LOGGER_HPP__
 
-#include <ostream>
+#include <iosfwd>
 #include <utility>
 
 namespace Go {
@@ -15,7 +15,7 @@ enum class LogLevel : unsigned char
     kFirehose = 4
 };
 
-class Logger
+class Logger final
 {
  private:
     LogLevel m_level = LogLevel::kNone;
@@ -62,7 +62,7 @@ extern Go::Logger gLogger;
 
 namespace Go {
 
-struct FunctionLogger
+struct FunctionLogger final
 {
     FunctionLogger (LogLevel level, std::ostream & out, const char * methodName)
       : m_level{level}
@@ -96,4 +96,4 @@ unsigned short FunctionLogger::nestingLevel = 1;
 
 } // namespace Go
 
-#endif // __LOGGER_HPP
+#endif /* end of include guard: INCL_LOGGER_HPP__ */

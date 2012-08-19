@@ -3,12 +3,10 @@
 
 #include <array>
 #include <functional>
+#include <memory>
 #include <utility>
-
+#include <vector>
 #include "Point.hpp"
-
-// Forward declarations
-//
 #include "Chain.fwd.hpp"
 #include "Stone.fwd.hpp"
 
@@ -17,6 +15,9 @@ namespace Go {
 	
 class Board final
 {
+ public:
+    static const int BOARD_SIZE = 9;
+
  private:
 
     // We will create some type aliases here to ease our typing
@@ -29,32 +30,38 @@ class Board final
     // similar interface to the std::array class???
     //
 
-    static const int BOARD_SIZE = 9;
     multi_array<Point, BOARD_SIZE, BOARD_SIZE> m_points;
     std::pair<bool, std::reference_wrapper<const Point>> m_koState;
 
  public:
     Board ();
+    ~Board () = default;
+
+    Board (const Board &) = delete;
+    Board & operator= (const Board &) = delete;
+
+    Board (Board &&) = delete;
+    Board & operator= (Board &&) = delete;
 
     std::vector<Chain> getAllEmptyChains ();
-    StoneColor getStoneColorAt (size_t x, size_t y) const;
-    bool isOccupiedPoint (size_t x, size_t y);
-    bool isValidMove (StoneColor color, size_t row, size_t column) const;
-    void placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone);
+    StoneColor getStoneColorAt (const PointCoords & coords) const;
+    bool isOccupiedPoint (const PointCoords & coords);
+    bool isValidMove (StoneColor color, const PointCoords & coords) const;
+    void placeStoneAt (const PointCoords & coords, std::unique_ptr<Stone> stone);
     size_t removeCapturedStones (StoneColor colorToCapture);
 
-    template <typename FnOnVisit>
-    void visitNeighboringPoints (const Point & point, FnOnVisit && onVisitFn) const
+    //template <typename FnOnVisit>
+    void visitNeighboringPoints (const Point & point, const PointVisitorFn & visitorFn) const
     {
-        onVisitFn(getPointAbove(point));
-        onVisitFn(getPointBelow(point));
-        onVisitFn(getPointLeft(point));
-        onVisitFn(getPointRight(point));
+        visitorFn(getPointAbove(point));
+        visitorFn(getPointBelow(point));
+        visitorFn(getPointLeft(point));
+        visitorFn(getPointRight(point));
     }
 
  private:
 
-    Chain calculateChain (size_t row, size_t column);
+    Chain calculateChain (const PointCoords & coords);
     bool doesKoRuleApply (const Chain & chain) const;
     const Point & getPointAbove (const Point & point) const;
     const Point & getPointBelow (const Point & point) const;

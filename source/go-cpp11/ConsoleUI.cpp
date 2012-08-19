@@ -4,11 +4,11 @@
 #include <cassert>
 #include <string>
 #include <utility>
-
 #include "Board.hpp"
 #include "IPlayer.hpp"
 #include "Stone.hpp"
 
+using namespace std;
 
 static const unsigned char kBorderTopLeftChar = '+';
 static const unsigned char kBorderTopRightChar = '+';
@@ -25,26 +25,35 @@ void printBoard (const Go::Board & board)
 {
     using namespace Go;
 
-    std::cout << kBorderTopLeftChar << std::string((9*2)+1, kBorderTopChar) << kBorderTopRightChar << std::endl;
+    cout << " ";
+    for (size_t i = 0; i < board.BOARD_SIZE; ++i)
+        cout << i;
+    cout << endl;
 
+    cout << kBorderTopLeftChar << string((9*2)+1, kBorderTopChar) << kBorderTopRightChar << endl;
 
-    for (size_t i = 0; i < 9; ++i)
+    for (size_t i = 0; i < board.BOARD_SIZE; ++i)
     {
-        std::cout << kBorderLeftChar;
-        for (size_t j = 0; j < 9; ++j)
+        cout << i << kBorderLeftChar;
+        for (size_t j = 0; j < board.BOARD_SIZE; ++j)
         {
-            std::cout << kPointSpacerChar;
+            cout << kPointSpacerChar;
             switch (board.getStoneColorAt(i, j))
             {
-             case StoneColor::NONE:  std::cout << kPointChar; break;
-             case StoneColor::BLACK: std::cout << 'B'; break; //'○'; break;
-             case StoneColor::WHITE: std::cout << 'W'; break; //'◙'; break;
+             case StoneColor::NONE:  cout << kPointChar; break;
+             case StoneColor::BLACK: cout << 'B'; break; //'○'; break;
+             case StoneColor::WHITE: cout << 'W'; break; //'◙'; break;
             }
         }
-        std::cout << kPointSpacerChar << kBorderRightChar << std::endl;
+        cout << kPointSpacerChar << kBorderRightChar << i << endl;
     }
 
-    std::cout << kBorderBottomLeftChar << std::string((9*2)+1, kBorderBottomChar) << kBorderBottomRightChar << std::endl;
+    cout << kBorderBottomLeftChar << string((9*2)+1, kBorderBottomChar) << kBorderBottomRightChar << endl;
+
+    cout << " ";
+    for (size_t i = 0; i < board.BOARD_SIZE; ++i)
+        cout << i;
+    cout << endl;
 }
 
 namespace Go
@@ -54,54 +63,54 @@ ConsoleUI::ConsoleUI (const IPlayer & player)
   : m_player(player)
 { }
 
-void ConsoleUI::onInvalidMove (const std::pair<size_t, size_t> & invalidMove)
+void ConsoleUI::onInvalidMove (const pair<size_t, size_t> & invalidMove)
 {
-    std::cout << "Invalid move [" << invalidMove.first << "," << invalidMove.second << "]. Try again!" << std::endl;
+    cout << "Invalid move [" << invalidMove.first << "," << invalidMove.second << "]. Try again!" << endl;
 }
 
 void ConsoleUI::onTie ()
 {
-    std::cout << m_player.getName() << " tied... So close." << std::endl;
+    cout << m_player.getName() << " tied... So close." << endl;
 }
 
 void ConsoleUI::onLoss ()
 {
-    std::cout << m_player.getName() << " loses. Sorry!" << std::endl;
+    cout << m_player.getName() << " loses. Sorry!" << endl;
 }
 
 void ConsoleUI::onWin ()
 {
-    std::cout << m_player.getName() << " WINS!" << std::endl;
+    cout << m_player.getName() << " WINS!" << endl;
 }
 
-std::pair<size_t, size_t> ConsoleUI::promptForMove ()
+PointCoords ConsoleUI::promptForMove ()
 {
-    std::cout << m_player.getName() << ", enter move: ";
+    cout << m_player.getName() << ", enter move: ";
 
     size_t x_coord = 0;
     size_t y_coord = 0;
 
-    std::cin >> x_coord >> y_coord;
+    cin >> x_coord >> y_coord;
 
-    return std::make_pair(x_coord, y_coord);
+    return {x_coord, y_coord};
 }
 
-std::string ConsoleUI::promptForName ()
+string ConsoleUI::promptForName ()
 {
-    std::cout << "Name for " << m_player.getName() << ": ";
+    cout << "Name for " << m_player.getName() << ": ";
 
-    std::string playerName;
-    std::cin >> playerName;
+    string playerName;
+    cin >> playerName;
 
     return playerName;
 }
 
 StoneColor ConsoleUI::promptForStoneColor ()
 {
-    std::cout << m_player.getName() << ", would you like to play as Black (0) or White (1): ";
+    cout << m_player.getName() << ", would you like to play as Black (0) or White (1): ";
 
     unsigned short choice = 0;
-    std::cin >> choice;
+    cin >> choice;
 
     assert(choice == 0 || choice == 1);
 
@@ -111,7 +120,7 @@ StoneColor ConsoleUI::promptForStoneColor ()
 void ConsoleUI::updateGameState ()
 {
     if (m_updateCount == 0)
-      std::cout << m_player.getName() << " is ready!" << std::endl;
+      cout << m_player.getName() << " is ready!" << endl;
     else
     {
       printBoard(m_player.getGameBoard());

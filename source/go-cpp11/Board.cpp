@@ -98,64 +98,82 @@ const Point & Board::getPointAbove (const Point & point) const
 {
     LOG_BUSY_FUNCTION(cout, "Board::getPointAbove");
 
-    if (point.coordinates.row - 1 < BOARD_SIZE)
-        return m_points[point.coordinates.row - 1][point.coordinates.column];
-
-    return point;
+    try
+    {
+        return m_points.at(point.coordinates.row - 1).at(point.coordinates.column);
+    }
+    catch (const out_of_range & ex)
+    {
+        return point;
+    }
 }
 
 const Point & Board::getPointBelow (const Point & point) const
 {
     LOG_BUSY_FUNCTION(cout, "Board::getPointBelow");
 
-    if (point.coordinates.row + 1 < BOARD_SIZE)
-        return m_points[point.coordinates.row + 1][point.coordinates.column];
-
-    return point;
+    try
+    {
+        return m_points.at(point.coordinates.row + 1).at(point.coordinates.column);
+    }
+    catch (const out_of_range & ex)
+    {
+        return point;
+    }
 }
 
 const Point & Board::getPointLeft (const Point & point) const
 {
     LOG_BUSY_FUNCTION(cout, "Board::getPointLeft");
 
-    if (point.coordinates.column - 1 < BOARD_SIZE)
-        return m_points[point.coordinates.row][point.coordinates.column - 1];
-
-    return point;
+    try
+    {
+        return m_points.at(point.coordinates.row).at(point.coordinates.column - 1);
+    }
+    catch (const out_of_range & ex)
+    {
+        return point;
+    }
 }
 
 const Point & Board::getPointRight (const Point & point) const
 {
     LOG_BUSY_FUNCTION(cout, "Board::getPointRight");
 
-    if (point.coordinates.column + 1 < BOARD_SIZE)
-        return m_points[point.coordinates.row][point.coordinates.column + 1];
-
-    return point;
+    try
+    {
+        return m_points.at(point.coordinates.row).at(point.coordinates.column + 1);
+    }
+    catch (const out_of_range & ex)
+    {
+        return point;
+    }
 }
 
-StoneColor Board::getStoneColorAt (size_t x, size_t y) const
+StoneColor Board::getStoneColorAt (const PointCoords & coords) const
 {
     LOG_BUSY_FUNCTION(cout, "Board::getStoneColorAt");
 
-    return m_points[x][y].getStoneColor();
+    return m_points.at(coords.row).at(coords.column).getStoneColor();
 }
 
-bool Board::isOccupiedPoint (size_t x, size_t y)
+bool Board::isOccupiedPoint (const PointCoords & coords)
 {
     LOG_FUNCTION(cout, "Board::isOccupiedPoint");
 
-    return !(m_points[x][y].canPlayStone());
+    return !(m_points.at(coords.row).at(coords.column).canPlayStone());
 }
 
-bool Board::isValidMove (StoneColor stoneColor, size_t row, size_t column) const
+bool Board::isValidMove (StoneColor stoneColor, const PointCoords & coords) const
 {
     LOG_FUNCTION(cout, "Board::isValidMove");
+
+    const Point & thePoint = m_points.at(coords.row).at(coords.column);
 
     // Easy Case: If there is already a stone there, then this cannot be a
     // valid move.
     //
-    if (!m_points[row][column].canPlayStone())
+    if (!thePoint.canPlayStone())
     {
         return false;
     }
@@ -171,7 +189,7 @@ bool Board::isValidMove (StoneColor stoneColor, size_t row, size_t column) const
     // Caclulate what the chain would look like if the stone were placed
     // at the desired location
     //
-    Chain potentialChain {stoneColor, m_points[row][column], *this, nullptr};
+    Chain potentialChain {stoneColor, thePoint, *this, nullptr};
 
     // A set of points that we've already examined. This helps prevents some
     // bad recursion and keeps a chain from being "found" once for each stone
@@ -218,7 +236,7 @@ bool Board::isValidMove (StoneColor stoneColor, size_t row, size_t column) const
         }
         catch (const Chain::PointVisitedAlreadyException & ex)
         {
-            gLogger.log(LogLevel::kHigh, cout, "Skipping point"); // " : ", point);
+            gLogger.log(LogLevel::kHigh, cout, "Skipping point", point);
         }
     });
 
@@ -234,19 +252,21 @@ bool Board::isValidMove (StoneColor stoneColor, size_t row, size_t column) const
     return true;
 }
 
-void Board::placeStoneAt (size_t x, size_t y, std::unique_ptr<Stone> stone)
+void Board::placeStoneAt (const PointCoords & coords, std::unique_ptr<Stone> stone)
 {
     LOG_FUNCTION(cout, "Board::placeStoneAt");
 
     assert(stone.get() != nullptr);
 
+    const Point & thePoint = m_points.at(coords.row).at(coords.column);
+
     // Remember this point for implementing the 'Ko' rule
     //
-    m_koState.second = m_points[x][y];
+    m_koState.second = thePoint;
 
     // Actually play the stone
     //
-    m_points[x][y].playStone(std::move(stone));
+    thePoint.playStone(std::move(stone));
 }
 
 size_t Board::removeCapturedStones (StoneColor colorToCapture)
@@ -265,14 +285,16 @@ size_t Board::removeCapturedStones (StoneColor colorToCapture)
     {
         for (size_t column = 0; column < m_points[row].size(); ++column)
         {
+            const Point & thePoint = m_points.at(coords.row).at(coords.column);
+
             // If the point we are considering has already been visited,
             // then Chain's ctor will throw a PointVisitedAlreadyException
             // object. We can safely swallow that exception and move on
             // to the next point.
             //
             try
-            {
-                Chain currentChain {m_points[row][column], *this, &alreadyVisited};
+            {                
+                Chain currentChain {thePoint, *this, &alreadyVisited};
 
                 gLogger.log(LogLevel::kMedium, cout, "Discovered chain"); // " : ", chain);
 
@@ -295,7 +317,7 @@ size_t Board::removeCapturedStones (StoneColor colorToCapture)
             }
             catch (const Chain::PointVisitedAlreadyException & ex)
             {
-                gLogger.log(LogLevel::kHigh, cout, "Skipping point"); // " : ", point);
+                gLogger.log(LogLevel::kHigh, cout, "Skipping point", thePoint);
             }
         }
     }

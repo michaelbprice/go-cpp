@@ -2,7 +2,6 @@
 #include <cassert>
 #include <iostream>
 #include <utility>
-
 #include "Board.hpp"
 #include "Chain.hpp"
 #include "Logger.hpp"
@@ -11,6 +10,9 @@
 using namespace std;
 
 /////////////////////////////////////////////////////////////////////////////////////
+
+// TODO: See Herb Sutter's Guru Of The Week article here
+// http://herbsutter.com/gotw/_102/
 
 template <typename T, typename ... Params>
 unique_ptr<T> make_unique (Params && ... params)
@@ -29,7 +31,7 @@ Player<TyPlayerUI>::Player (const string & name)
   : m_ui(*this)
   , m_name(name)
 {
-    LOG_FUNCTION(cout, "Player::Player");
+    LOG_FUNCTION(cout, __func__);
 }
 
 template <typename TyPlayerUI>
@@ -40,6 +42,28 @@ void Player<TyPlayerUI>::addToCaptured (size_t numCaptured)
     m_capturedCount += numCaptured;
 }
 
+template <typename TyPlayerUI>
+size_t Player<TyPlayerUI>::calculateScore ()
+{
+    LOG_FUNCTION(cout, "Player::calculateScore");
+
+    size_t territoryCount = 0;
+
+    for (auto & chain : m_pBoard->getAllEmptyChains())
+    {
+        assert(chain.color() == StoneColor::NONE);
+
+        StoneColor opponentColor = getOpposingColor(m_stoneColor);
+
+        if (chain.borderCountOf(opponentColor) > 0)
+            continue;
+
+        if (chain.borderCountOf(m_stoneColor) > 0)
+            territoryCount += chain.size();
+    }
+
+    return territoryCount + m_capturedCount;
+}
 
 template <typename TyPlayerUI>
 void Player<TyPlayerUI>::chooseName ()
@@ -78,11 +102,59 @@ const string & Player<TyPlayerUI>::getName () const
 }
 
 template <typename TyPlayerUI>
+StoneColor Player<TyPlayerUI>::getStoneColor ()
+{
+    LOG_FUNCTION(cout, "Player::getStoneColor");
+
+    return m_stoneColor;
+}
+
+template <typename TyPlayerUI>
 bool Player<TyPlayerUI>::hasStones () const
 {
     LOG_FUNCTION(cout, "Player::hasStones");
 
     return !m_stones.empty();
+}
+
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::notifyGameReady ()
+{
+    LOG_FUNCTION(cout, "Player::notifyGameReady");
+
+    m_ui.updateGameState();
+}
+
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::notifyLost ()
+{
+    LOG_FUNCTION(cout, "Player::notifyLost");
+
+    m_ui.onLoss();
+}
+
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::notifyTied ()
+{
+    LOG_FUNCTION(cout, "Player::notifyTied");
+
+    m_ui.onTie();
+}
+
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::notifyTurn ()
+{
+    LOG_FUNCTION(cout, "Player::notifyTurn");
+
+    m_ui.updateGameState();
+}
+
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::notifyWon ()
+{
+    LOG_FUNCTION(cout, "Player::notifyWon");
+
+    m_ui.onWin();
 }
 
 template <typename TyPlayerUI>
@@ -120,14 +192,6 @@ void Player<TyPlayerUI>::setStoneColor (StoneColor color)
 }
 
 template <typename TyPlayerUI>
-StoneColor Player<TyPlayerUI>::getStoneColor ()
-{
-    LOG_FUNCTION(cout, "Player::getStoneColor");
-
-    return m_stoneColor;
-}
-
-template <typename TyPlayerUI>
 pair<size_t, size_t> Player<TyPlayerUI>::playStone ()
 {
     LOG_FUNCTION(cout, "Player::playStone");
@@ -148,70 +212,6 @@ pair<size_t, size_t> Player<TyPlayerUI>::playStone ()
     m_stones.pop_back();
 
     return theMove;
-}
-
-template <typename TyPlayerUI>
-void Player<TyPlayerUI>::onGameReady ()
-{
-    LOG_FUNCTION(cout, "Player::onGameReady");
-
-    m_ui.updateGameState();
-}
-
-template <typename TyPlayerUI>
-void Player<TyPlayerUI>::onTurn ()
-{
-    LOG_FUNCTION(cout, "Player::onTurn");
-
-    m_ui.updateGameState();
-}
-
-
-template <typename TyPlayerUI>
-size_t Player<TyPlayerUI>::calculateScore ()
-{
-    LOG_FUNCTION(cout, "Player::calculateScore");
-
-    size_t territoryCount = 0;
-
-    for (auto & chain : m_pBoard->getAllEmptyChains())
-    {
-        assert(chain.color() == StoneColor::NONE);
-
-        StoneColor opponentColor = getOpposingColor(m_stoneColor);
-
-        if (chain.borderCountOf(opponentColor) > 0)
-            continue;
-
-        if (chain.borderCountOf(m_stoneColor) > 0)
-            territoryCount += chain.size();
-    }
-
-    return territoryCount + m_capturedCount;
-}
-
-template <typename TyPlayerUI>
-void Player<TyPlayerUI>::lost ()
-{
-    LOG_FUNCTION(cout, "Player::lost");
-
-    m_ui.onLoss();
-}
-
-template <typename TyPlayerUI>
-void Player<TyPlayerUI>::tied ()
-{
-    LOG_FUNCTION(cout, "Player::tied");
-
-    m_ui.onTie();
-}
-
-template <typename TyPlayerUI>
-void Player<TyPlayerUI>::won ()
-{
-    LOG_FUNCTION(cout, "Player::won");
-
-    m_ui.onWin();
 }
 
 }

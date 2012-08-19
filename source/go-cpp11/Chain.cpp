@@ -55,13 +55,6 @@ Chain::Chain (const Point & startPoint, const Board & board, ConstPointSet * poi
     LOG_FUNCTION(cout, "Chain::Chain(...)");
 }
 
-/*
-Chain::~Chain ()
-{
-cout << "Destruction" << endl;
-}
-*/
-
 void Chain::doChainCalculation (const Point & point, const Board & board, ConstPointSet & pointsToIgnore)
 {
     LOG_BUSY_FUNCTION(cout, "Chain::doChainCalculation");

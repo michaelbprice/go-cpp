@@ -1,10 +1,8 @@
-#ifndef __CHAIN_HPP_
-#define __CHAIN_HPP_
+#ifndef INCL_CHAIN_HPP__
+#define INCL_CHAIN_HPP__
 
+#include <functional>
 #include <unordered_map>
-
-// Forward declarations
-//
 #include "std.fwd.hpp"
 #include "Board.fwd.hpp"
 #include "Point.fwd.hpp"
@@ -17,38 +15,43 @@ class Chain
 {
  private:
     std::unordered_map<StoneColor, ConstPointSet> m_chainAndNeighbors;
-    StoneColor m_color;
     const Point & m_startPoint;
+    StoneColor m_color; // Inline assignment would need full definition!!!
 
  public:
     struct PointVisitedAlreadyException { };
 
+    // Construct a chain from the actual state of a point
     Chain (const Point & startPoint, const Board & board, ConstPointSet * pointsToIgnore);
+
+    // Construct a chain from the potential state of a point
     Chain (StoneColor stoneColor, const Point & startPoint, const Board & board, ConstPointSet * pointsToIgnore);
+
+    ~Chain () = default;
 
 // TODO: Figure out crshing problem with moving/emplacement
     Chain (const Chain &) = default;
 //    Chain (Chain && other) = default;
-//    ~Chain ();
 
     size_t borderCountOf (StoneColor color);
     StoneColor color () const;
     bool containsPoint (const Point & point) const;
-    size_t libertyCount () const;
-    size_t size () const;
 
-    template <typename Fn>
-    void forEachPoint (Fn && fn)
+     //template <typename Fn>
+    void forEachPoint (const PointVisitorFn & visitorFn)
     {
-        forEachSurroundingPoint(m_color, std::forward<Fn>(fn));
+        forEachSurroundingPoint(m_color, visitorFn);
     }
 
-    template <typename Fn>
-    void forEachSurroundingPoint (StoneColor color, Fn && fn)
+    //template <typename Fn>
+    void forEachSurroundingPoint (StoneColor color, const PointVisitorFn & visitorFn)
     {
         for (auto & p : m_chainAndNeighbors[color])
-            fn(*p);
+            visitorFn(*p);
     }
+
+    size_t libertyCount () const;
+    size_t size () const;
 
  private:
     void doChainCalculation (const Point & point, const Board & board, ConstPointSet & pointsToIgnore);
@@ -56,4 +59,4 @@ class Chain
 
 } // namespace Go
 
-#endif // __CHAIN_HPP_
+#endif /* end of include guard: INCL_CHAIN_HPP__ */
