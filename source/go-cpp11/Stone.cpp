@@ -2,10 +2,11 @@
 
 #include <ostream>
 
-namespace Go
-{
+using namespace std;
 
-StoneColor Stone::getColor ()
+namespace Go {
+
+StoneColor Stone::getColor () const
 {
     return m_color;
 }
@@ -20,17 +21,17 @@ StoneColor getOpposingColor (StoneColor color)
 
 }
 
-ostream & operator<< (ostream & out, const Go::Stone & stone);
+ostream & operator<< (ostream & out, const Go::Stone & stone)
 {
-	using namespace Go;
-	out << "Stone: {";
+    using namespace Go;
+    out << "Stone: {";
 
-	switch (stone.getColor())
-	{
+    switch (stone.getColor())
+    {
      case StoneColor::NONE: out << "Empty"; break;
      case StoneColor::BLACK: out << "Black"; break;
      case StoneColor::WHITE: out << "White"; break;
-	}
+    }
 
     out << "}";
     return out;

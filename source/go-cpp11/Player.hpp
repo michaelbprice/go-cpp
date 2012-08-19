@@ -18,7 +18,7 @@ class Player final : public IPlayer
 
     Board * m_pBoard = nullptr; // Non-owning pointer... do NOT delete!
 
-    StoneColor m_stoneColor = StoneColor::NONE;
+    StoneColor m_stoneColor;
     std::string m_name;
     Stones m_stones;
     size_t m_capturedCount = 0;
@@ -34,7 +34,7 @@ class Player final : public IPlayer
     Player & operator= (Player &&) = default;
 
     virtual void addToCaptured (size_t numCaptured) override;
-    virtual size_t calculateScore () override;
+    virtual size_t calculateScore () const override;
     virtual void chooseName () override;
     virtual StoneColor chooseStoneColor () override;
     virtual const Board & getGameBoard () const override;

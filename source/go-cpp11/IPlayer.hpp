@@ -13,7 +13,7 @@ class IPlayer
  public:
 
     virtual void addToCaptured (size_t numCaptured) = 0;
-    virtual size_t calculateScore () = 0;
+    virtual size_t calculateScore () const = 0;
     virtual void chooseName () = 0;
     virtual StoneColor chooseStoneColor () = 0;
     virtual const Board & getGameBoard () const = 0;

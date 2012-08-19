@@ -6,6 +6,7 @@
 #include "Chain.hpp"
 #include "Logger.hpp"
 #include "Player.hpp"
+#include "Stone.hpp"
 
 using namespace std;
 
@@ -43,7 +44,7 @@ void Player<TyPlayerUI>::addToCaptured (size_t numCaptured)
 }
 
 template <typename TyPlayerUI>
-size_t Player<TyPlayerUI>::calculateScore ()
+size_t Player<TyPlayerUI>::calculateScore () const
 {
     LOG_FUNCTION(cout, "Player::calculateScore");
 
@@ -192,7 +193,7 @@ void Player<TyPlayerUI>::setStoneColor (StoneColor color)
 }
 
 template <typename TyPlayerUI>
-pair<size_t, size_t> Player<TyPlayerUI>::playStone ()
+PointCoords Player<TyPlayerUI>::playStone ()
 {
     LOG_FUNCTION(cout, "Player::playStone");
 
@@ -201,14 +202,14 @@ pair<size_t, size_t> Player<TyPlayerUI>::playStone ()
     gLogger.log(LogLevel::kMedium, cout, "About to prompt for move input");
     auto theMove = m_ui.promptForMove();
 
-    while (!m_pBoard->isValidMove(m_stones.back()->getColor(), theMove.first, theMove.second))
+    while (!m_pBoard->isValidMove(m_stones.back()->getColor(), theMove))
     {
         gLogger.log(LogLevel::kMedium, cout, "Invalid move");
         m_ui.onInvalidMove(theMove);
         theMove = m_ui.promptForMove();
     }
 
-    m_pBoard->placeStoneAt(theMove.first, theMove.second, move(m_stones.back()));
+    m_pBoard->placeStoneAt(theMove, move(m_stones.back()));
     m_stones.pop_back();
 
     return theMove;

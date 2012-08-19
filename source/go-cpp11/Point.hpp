@@ -5,19 +5,27 @@
 #include <iosfwd>
 #include <memory>
 #include <unordered_set>
+
+#include "Point.fwd.hpp"
 #include "Stone.fwd.hpp"
+
+std::ostream & operator<< (std::ostream & out, const Go::PointCoords & coords);
+std::ostream & operator<< (std::ostream & out, const Go::Point & point);
 
 namespace Go {
 
 struct PointCoords final
 {
+    PointCoords () = default;
+    PointCoords (size_t r, size_t c) : row(r), column(c) { }
+
     size_t row = 0;
     size_t column = 0;
 };
 
 class Point final
 {
- friend ostream & operator<< (ostream & out, const Point & point);
+ friend std::ostream & ::operator<< (std::ostream & out, const Go::Point & point);
 
  private:
     std::unique_ptr<Stone> m_stone = nullptr;
@@ -34,15 +42,13 @@ class Point final
     void removeStone ();
 };
 
-using PointSet = std::unordered_set<Point*>;
-using ConstPointSet = std::unordered_set<const Point*>;
+//using PointSet = std::unordered_set<Point*>;
+//using ConstPointSet = std::unordered_set<const Point*>;
 
-using std::function<void(const Point &)> = PointVisitorFn;
+//using PointVisitorFn = std::function<void(const Point &)>;
 
 } // namespace Go
 
-ostream & operator<< (ostream & out, const Go::PointCoords & coords);
-ostream & operator<< (ostream & out, const Go::Point & point);
 
 
 #endif /* end of include guard: INCL_POINT_HPP__ */

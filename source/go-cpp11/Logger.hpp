@@ -1,7 +1,7 @@
 #ifndef INCL_LOGGER_HPP__
 #define INCL_LOGGER_HPP__
 
-#include <iosfwd>
+#include <iostream>
 #include <utility>
 
 namespace Go {
@@ -55,7 +55,7 @@ class Logger final
 } // namespace Go
 
 #ifdef MAIN_CPP
-Go::Logger gLogger {Go::LogLevel::kHigh};
+Go::Logger gLogger {Go::LogLevel::kNone};
 #else
 extern Go::Logger gLogger;
 #endif

@@ -86,7 +86,7 @@ std::vector<Chain> Board::getAllEmptyChains ()
             }
             catch (const Chain::PointVisitedAlreadyException & ex)
             {
-                gLogger.log(LogLevel::kHigh, cout, "Skipping point"); // " : ", point);
+                gLogger.log(LogLevel::kFirehose, cout, "Skipping ", point);
             }
         }
     }
@@ -236,7 +236,7 @@ bool Board::isValidMove (StoneColor stoneColor, const PointCoords & coords) cons
         }
         catch (const Chain::PointVisitedAlreadyException & ex)
         {
-            gLogger.log(LogLevel::kHigh, cout, "Skipping point", point);
+            gLogger.log(LogLevel::kFirehose, cout, "Skipping ", point);
         }
     });
 
@@ -258,7 +258,7 @@ void Board::placeStoneAt (const PointCoords & coords, std::unique_ptr<Stone> sto
 
     assert(stone.get() != nullptr);
 
-    const Point & thePoint = m_points.at(coords.row).at(coords.column);
+    Point & thePoint = m_points.at(coords.row).at(coords.column);
 
     // Remember this point for implementing the 'Ko' rule
     //
@@ -285,7 +285,7 @@ size_t Board::removeCapturedStones (StoneColor colorToCapture)
     {
         for (size_t column = 0; column < m_points[row].size(); ++column)
         {
-            const Point & thePoint = m_points.at(coords.row).at(coords.column);
+            const Point & thePoint = m_points.at(row).at(column);
 
             // If the point we are considering has already been visited,
             // then Chain's ctor will throw a PointVisitedAlreadyException
@@ -317,7 +317,7 @@ size_t Board::removeCapturedStones (StoneColor colorToCapture)
             }
             catch (const Chain::PointVisitedAlreadyException & ex)
             {
-                gLogger.log(LogLevel::kHigh, cout, "Skipping point", thePoint);
+                gLogger.log(LogLevel::kFirehose, cout, "Skipping ", thePoint);
             }
         }
     }

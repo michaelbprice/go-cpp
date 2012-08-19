@@ -4,17 +4,19 @@
 #include <functional>
 #include <iostream>
 #include <utility>
+#include "Board.hpp"
 #include "IPlayer.hpp"
 #include "Logger.hpp"
+#include "Point.hpp"
 #include "Stone.hpp"
 
 using namespace std;
 
 // ***************** PRIVATE HELPER FUNCTIONS *****************
 
-bool didPlayerPass (const pair<size_t, size_t> & move)
+bool didPlayerPass (const Go::PointCoords & move)
 {
-    return move.first >= 19 || move.second >= 19;
+    return move.row >= Go::Board::BOARD_SIZE || move.column >= Go::Board::BOARD_SIZE;
 }
 
 // *************** END PRIVATE HELPER FUNCTIONS ***************
@@ -51,7 +53,7 @@ void GameController::doGameLoop (PlayerPair & playerPair)
 
         // Notify the current player that it is their turn
         //
-        currentPlayer.onTurn();
+        currentPlayer.notifyTurn();
 
         // If the player has stones left, have the current player make
         // a move; otherwise count as a pass
@@ -100,18 +102,18 @@ void GameController::doScoring ()
     //
     if (playerOneScore == playerTwoScore)
     {
-        m_playerOne.tied();
-        m_playerTwo.tied();
+        m_playerOne.notifyTied();
+        m_playerTwo.notifyTied();
     } 
     else if (playerOneScore > playerTwoScore)
     {
-        m_playerOne.won();
-        m_playerTwo.lost();
+        m_playerOne.notifyWon();
+        m_playerTwo.notifyLost();
     }
     else // (playerTwoScore > playerOneScore)
     {
-        m_playerTwo.won();
-        m_playerOne.lost();
+        m_playerTwo.notifyWon();
+        m_playerOne.notifyLost();
     }
 }
 
@@ -148,8 +150,8 @@ void GameController::start ()
 
     // Signal to the players that the game is ready
     //
-    playerPair.first.get().onGameReady();
-    playerPair.second.get().onGameReady();
+    playerPair.first.get().notifyGameReady();
+    playerPair.second.get().notifyGameReady();
 
 
     // Start the move selection loop

@@ -3,7 +3,6 @@
 #include <iostream>
 #include <cassert>
 #include <string>
-#include <utility>
 #include "Board.hpp"
 #include "IPlayer.hpp"
 #include "Stone.hpp"
@@ -25,34 +24,34 @@ void printBoard (const Go::Board & board)
 {
     using namespace Go;
 
-    cout << " ";
+    cout << "   ";
     for (size_t i = 0; i < board.BOARD_SIZE; ++i)
-        cout << i;
+        cout << " " << i;
     cout << endl;
 
-    cout << kBorderTopLeftChar << string((9*2)+1, kBorderTopChar) << kBorderTopRightChar << endl;
+    cout << "  " << kBorderTopLeftChar << string((9*2)+1, kBorderTopChar) << kBorderTopRightChar << endl;
 
     for (size_t i = 0; i < board.BOARD_SIZE; ++i)
     {
-        cout << i << kBorderLeftChar;
+        cout << i << " " << kBorderLeftChar;
         for (size_t j = 0; j < board.BOARD_SIZE; ++j)
         {
             cout << kPointSpacerChar;
-            switch (board.getStoneColorAt(i, j))
+            switch (board.getStoneColorAt({i, j}))
             {
              case StoneColor::NONE:  cout << kPointChar; break;
              case StoneColor::BLACK: cout << 'B'; break; //'○'; break;
              case StoneColor::WHITE: cout << 'W'; break; //'◙'; break;
             }
         }
-        cout << kPointSpacerChar << kBorderRightChar << i << endl;
+        cout << kPointSpacerChar << kBorderRightChar << " " << i << endl;
     }
 
-    cout << kBorderBottomLeftChar << string((9*2)+1, kBorderBottomChar) << kBorderBottomRightChar << endl;
+    cout << "  " << kBorderBottomLeftChar << string((9*2)+1, kBorderBottomChar) << kBorderBottomRightChar << endl;
 
-    cout << " ";
+    cout << "   ";
     for (size_t i = 0; i < board.BOARD_SIZE; ++i)
-        cout << i;
+        cout << " " << i;
     cout << endl;
 }
 
@@ -63,9 +62,9 @@ ConsoleUI::ConsoleUI (const IPlayer & player)
   : m_player(player)
 { }
 
-void ConsoleUI::onInvalidMove (const pair<size_t, size_t> & invalidMove)
+void ConsoleUI::onInvalidMove (const PointCoords & invalidMove)
 {
-    cout << "Invalid move [" << invalidMove.first << "," << invalidMove.second << "]. Try again!" << endl;
+    cout << "Invalid move [" << invalidMove.row << "," << invalidMove.column << "]. Try again!" << endl;
 }
 
 void ConsoleUI::onTie ()
@@ -85,7 +84,7 @@ void ConsoleUI::onWin ()
 
 PointCoords ConsoleUI::promptForMove ()
 {
-    cout << m_player.getName() << ", enter move: ";
+    cout << m_player.getName() << "(" << m_player.calculateScore() << "), enter move: ";
 
     size_t x_coord = 0;
     size_t y_coord = 0;

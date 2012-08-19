@@ -36,14 +36,14 @@ class Stone final
     Stone(Stone && other) = default;
     Stone & operator= (Stone && other) = default;
 
-    StoneColor getColor ();
+    StoneColor getColor () const;
 };
 
 using Stones = std::vector<std::unique_ptr<Stone>>;
 
 }
 
-ostream & operator<< (ostream & out, const Go::Stone & stone);
+std::ostream & operator<< (std::ostream & out, const Go::Stone & stone);
 
 
 #endif /* end of include guard: INCL_STONE_HPP__ */

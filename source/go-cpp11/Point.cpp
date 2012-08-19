@@ -31,23 +31,24 @@ void Point::removeStone ()
     m_stone.reset();
 }
 
+
 } // namespace Go
 
 ostream & operator<< (ostream & out, const Go::PointCoords & coords)
 {
-	out << "[" << coords.row << "," << coords.column << "]";
-	return out;
+    out << "[" << coords.row << "," << coords.column << "]";
+    return out;
 }
 
 ostream & operator<< (ostream & out, const Go::Point & point)
 {
-	out << "Point: {" << point.coordinates << ", ";
+    out << "Point: {" << point.coordinates << ", ";
 
-	if (m_stone.get())
-		out << *m_stone;
-	else
-		out << "{null}";
+    if (point.m_stone.get())
+        out << *point.m_stone;
+    else
+        out << "{null}";
 
     out << "}";
-	return out;
+    return out;
 }
