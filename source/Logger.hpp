@@ -54,11 +54,7 @@ class Logger final
 
 } // namespace Go
 
-#ifdef MAIN_CPP
-Go::Logger gLogger {Go::LogLevel::kNone};
-#else
 extern Go::Logger gLogger;
-#endif
 
 namespace Go {
 
@@ -86,10 +82,6 @@ struct FunctionLogger final
     static const unsigned short kIndention = 2;
     static unsigned short nestingLevel;
 };
-
-#ifdef MAIN_CPP
-unsigned short FunctionLogger::nestingLevel = 1;
-#endif
 
 #define LOG_FUNCTION(stream, fnname) FunctionLogger _fnLogger {LogLevel::kHigh, stream, fnname};
 #define LOG_BUSY_FUNCTION(stream, fnname) FunctionLogger _fnLogger {LogLevel::kFirehose, stream, fnname};

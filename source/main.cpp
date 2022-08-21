@@ -1,5 +1,3 @@
-#define MAIN_CPP
-
 #include <memory>
 
 #include "ConsoleUI.hpp"

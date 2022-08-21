@@ -2,14 +2,22 @@ cmake_minimum_required(VERSION 3.20)
 
 project(go-cpp CXX)
 set(CMAKE_CXX_STANDARD 20)
+include_directories(${PROJECT_SOURCE_DIR}/source)
+
+################################################################################
+# Library
+################################################################################
+
+file(GLOB SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/*.cpp)
+list(REMOVE_ITEM SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/main.cpp)
+add_library(goimpl ${SOURCE_FILES})
 
 ################################################################################
 # Main executable
 ################################################################################
 
-include_directories(${PROJECT_SOURCE_DIR}/source)
-file(GLOB SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/*.cpp)
-add_executable(go ${SOURCE_FILES})
+add_executable(go ${PROJECT_SOURCE_DIR}/source/main.cpp)
+target_link_libraries(go goimpl)
 
 
 ################################################################################
@@ -20,4 +28,4 @@ find_package(Catch2 3 CONFIG REQUIRED)
 
 file(GLOB TEST_SOURCE_FILES ${PROJECT_SOURCE_DIR}/tests/*.cpp)
 add_executable(go-tests ${TEST_SOURCE_FILES})
-target_link_libraries(go-tests PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
+target_link_libraries(go-tests PUBLIC goimpl PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
