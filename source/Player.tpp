@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <memory>
 #include <utility>
 #include "Board.hpp"
 #include "Chain.hpp"
@@ -9,20 +10,6 @@
 #include "Stone.hpp"
 
 using namespace std;
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-// TODO: See Herb Sutter's Guru Of The Week article here
-// http://herbsutter.com/gotw/_102/
-
-template <typename T, typename ... Params>
-unique_ptr<T> make_unique (Params && ... params)
-{
-   return unique_ptr<T>(new T(forward<Params>(params)...));
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
 
 namespace Go
 {
@@ -189,7 +176,7 @@ void Player<TyPlayerUI>::setStoneColor (StoneColor color)
     m_stones.reserve(numberOfStones);
 
     for (size_t i = 0; i < numberOfStones; ++i)
-        m_stones.emplace_back(make_unique<Stone>(m_stoneColor));
+        m_stones.emplace_back(std::make_unique<Stone>(m_stoneColor));
 }
 
 template <typename TyPlayerUI>
