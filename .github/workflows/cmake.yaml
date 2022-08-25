@@ -1,0 +1,44 @@
+name: Build/Test cross-platform CMake project
+
+on: [ workflow_dispatch ]
+
+jobs:
+  job:
+    name: ${{ matrix.os }} - ${{ matrix.cmake_preset }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        cmake_preset: [ debug, release ]
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+
+    - name: Fetch Ninja
+      uses: seanmiddleditch/gha-setup-ninja@v3
+
+    - name: Use vcpkg to fetch dependencies
+      run: vcpkg install
+
+    - name: Configure and run CMake
+      uses: lukka/run-cmake@v10
+      env:
+        VCPKG_ROOT: ${{ fromJSON('[ "/usr/local/share/vcpkg", "C:\\vcpkg" ]')[runner.os == 'Windows'] }}
+        CC: ${{ fromJSON('{"Linux":"gcc-10", "macOS":"/usr/local/opt/llvm/bin/clang", "Windows":"" }')[runner.os] }}
+        CXX: ${{ fromJSON('{"Linux":"g++-10", "macOS":"/usr/local/opt/llvm//bin/clang++", "Windows":"" }')[runner.os] }}
+      with:
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        configurePreset: ${{ matrix.cmake_preset }}
+        buildPreset: ${{ matrix.cmake_preset }}
+        testPreset: ${{ matrix.cmake_preset }}
+
+    - name: Generate Test Report
+      uses: dorny/test-reporter@v1.5.0
+      if: success() || failure()
+      with:
+        name: go-tests - ${{ matrix.os }} - ${{ matrix.cmake_preset }}
+        path: out/${{ matrix.cmake_preset }}/junit-output/*
+        reporter: java-junit
