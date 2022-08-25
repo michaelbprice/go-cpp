@@ -1,12 +1,11 @@
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
-    "name": "go-cpp",
-    "version-semver": "0.1.1",
-    "builtin-baseline": "320059c010dc13d7ae28b2c148ff1bb0ed9b81c3",
-    "dependencies": [
-      {
-        "name": "catch2",
-        "version>=": "3.0.1#2"
-      }
-    ]
-  }
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "go-cpp",
+  "version": "0.1.1",
+  "dependencies": [
+    {
+      "name": "catch2",
+      "version>=": "3.0.1#2"
+    }
+  ]
+}
