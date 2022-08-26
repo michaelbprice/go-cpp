@@ -4,6 +4,8 @@ project(go-cpp CXX)
 set(CMAKE_CXX_STANDARD 20)
 include_directories(${PROJECT_SOURCE_DIR}/source)
 
+enable_testing()
+
 ################################################################################
 # Library
 ################################################################################
@@ -28,4 +30,8 @@ find_package(Catch2 3 CONFIG REQUIRED)
 
 file(GLOB TEST_SOURCE_FILES ${PROJECT_SOURCE_DIR}/tests/*.cpp)
 add_executable(go-tests ${TEST_SOURCE_FILES})
-target_link_libraries(go-tests PUBLIC goimpl PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
+target_link_libraries(go-tests PUBLIC goimpl PRIVATE Catch2::Catch2WithMain)
+
+include(CTest)
+include(Catch)
+catch_discover_tests(go-tests)

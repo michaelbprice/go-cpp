@@ -38,5 +38,17 @@
             "displayName": "Release Build",
             "configurePreset": "release"
         }
+    ],
+    "testPresets": [
+        {
+            "name": "debug",
+            "displayName": "Debug Test",
+            "configurePreset": "debug"
+        },
+        {
+            "name": "release",
+            "displayName": "Release Test",
+            "configurePreset": "release"
+        }
     ]
 }

@@ -33,3 +33,4 @@
 
 # CMake build files
 out/
+**/Testing/*
