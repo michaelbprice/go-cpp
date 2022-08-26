@@ -21,7 +21,6 @@ TEST_CASE("Stones require a valid StoneColor on construction", "[stone-ctors]") 
     STATIC_REQUIRE(std::constructible_from<Stone, StoneColor>);
     REQUIRE_NOTHROW(Stone{StoneColor::BLACK});
     REQUIRE_NOTHROW(Stone{StoneColor::WHITE});
-    REQUIRE_THROWS(Stone{StoneColor::NONE}); // TODO: Remove StoneColor::NONE
 }
 
 TEST_CASE("Stone color is accessible and immutable", "[stone-confirm]") {
