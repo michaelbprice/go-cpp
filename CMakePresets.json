@@ -16,15 +16,27 @@
         },
         {
             "name": "debug",
-            "displayName": "Debug",
+            "displayName": "Debug Config",
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" },
             "inherits": ["base"]
         },
         {
             "name": "release",
-            "displayName": "Release",
+            "displayName": "Release Config",
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" },
             "inherits": ["base"]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "displayName": "Debug Build",
+            "configurePreset": "debug"
+        },
+        {
+            "name": "release",
+            "displayName": "Release Build",
+            "configurePreset": "release"
         }
     ]
 }
