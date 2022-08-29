@@ -34,4 +34,4 @@ target_link_libraries(go-tests PUBLIC goimpl PRIVATE Catch2::Catch2WithMain)
 
 include(CTest)
 include(Catch)
-catch_discover_tests(go-tests)
+catch_discover_tests(go-tests REPORTER junit OUTPUT_DIR junit-output)
