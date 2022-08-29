@@ -19,6 +19,8 @@ struct PointCoords final
     PointCoords () = default;
     PointCoords (size_t r, size_t c) : row(r), column(c) { }
 
+    bool operator==(const PointCoords&) const = default;
+
     size_t row = 0;
     size_t column = 0;
 };
