@@ -7,7 +7,7 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/${presetName}",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/${presetName}install/",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/${presetName}/install/",
                 "CMAKE_TOOLCHAIN_FILE": {
                     "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
                      "type": "FILEPATH"
