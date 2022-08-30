@@ -9,14 +9,27 @@
 #include "Point.hpp"
 #include "Stone.hpp"
 
+namespace {
+
+std::optional<Go::StoneColor>
+stoneToColor(const std::optional<Go::Stone> & stone) {
+    return stone.has_value() ?
+        std::optional<Go::StoneColor>{stone->getColor()} :
+        std::nullopt;
+}
+
+}
+
 namespace Go {
 
 using namespace std;
 
-Chain::Chain (StoneColor stoneColor, const Point & startPoint, const Board & board, ConstPointSet * pointsToIgnore)
+Chain::Chain (const std::optional<StoneColor> & stoneColor,
+              const Point & startPoint, const Board & board,
+              ConstPointSet * pointsToIgnore)
   : m_color(stoneColor)
   , m_startPoint(startPoint)
-  , m_chainAndNeighbors({{StoneColor::NONE,  ConstPointSet{}},
+  , m_chainAndNeighbors({{std::nullopt,      ConstPointSet{}},
                          {StoneColor::BLACK, ConstPointSet{}},
                          {StoneColor::WHITE, ConstPointSet{}}})
 {
@@ -50,7 +63,7 @@ Chain::Chain (StoneColor stoneColor, const Point & startPoint, const Board & boa
 }
 
 Chain::Chain (const Point & startPoint, const Board & board, ConstPointSet * pointsToIgnore)
-  : Chain(startPoint.getStoneColor(), startPoint, board, pointsToIgnore)
+  : Chain(stoneToColor(startPoint.getStone()), startPoint, board, pointsToIgnore)
 {
     LOG_FUNCTION(cout, "Chain::Chain(...)");
 }
@@ -84,13 +97,16 @@ void Chain::doChainCalculation (const Point & point, const Board & board, ConstP
             // our own, then recurse on that point; otherwise insert the
             // point into the appropriate map
             //
-            if (testPoint.getStoneColor() == m_color)
+            const std::optional<Stone> & testStone = testPoint.getStone();
+
+            const auto & testColor = stoneToColor(testStone);
+            if (testColor == m_color)
             {
                 doChainCalculation(testPoint, board, pointsToIgnore);
             }
             else
             {
-                ConstPointSet & set = m_chainAndNeighbors.at(testPoint.getStoneColor());
+                ConstPointSet & set = m_chainAndNeighbors.at(testColor);
 
                 if (set.find(&testPoint) == set.end())
                 {
@@ -101,7 +117,7 @@ void Chain::doChainCalculation (const Point & point, const Board & board, ConstP
     });
 }
 
-size_t Chain::borderCountOf (StoneColor color)
+size_t Chain::borderCountOf (const std::optional<StoneColor> & color)
 {
     LOG_BUSY_FUNCTION(cout, "Chain::borderCountOf");
  
@@ -110,7 +126,7 @@ size_t Chain::borderCountOf (StoneColor color)
     return m_chainAndNeighbors.at(color).size();
 }
 
-StoneColor Chain::color () const
+const std::optional<StoneColor> & Chain::color () const
 {
     LOG_BUSY_FUNCTION(cout, "Chain::color");
  
@@ -121,7 +137,7 @@ size_t Chain::libertyCount () const
 {
     LOG_FUNCTION(cout, "Chain::libertyCount");
  
-    return m_chainAndNeighbors.at(StoneColor::NONE).size();
+    return m_chainAndNeighbors.at(std::nullopt).size();
 }
 
 size_t Chain::size () const

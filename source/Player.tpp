@@ -39,9 +39,10 @@ size_t Player<TyPlayerUI>::calculateScore () const
 
     for (auto & chain : m_pBoard->getAllEmptyChains())
     {
-        assert(chain.color() == StoneColor::NONE);
+        assert(!chain.color().has_value());
+        assert(m_stoneColor.has_value());
 
-        StoneColor opponentColor = getOpposingColor(m_stoneColor);
+        StoneColor opponentColor = getOpposingColor(m_stoneColor.value());
 
         if (chain.borderCountOf(opponentColor) > 0)
             continue;
@@ -68,7 +69,8 @@ StoneColor Player<TyPlayerUI>::chooseStoneColor ()
 
     setStoneColor(m_ui.promptForStoneColor());
 
-    return m_stoneColor;
+    assert(m_stoneColor.has_value());
+    return m_stoneColor.value();
 }
 
 template <typename TyPlayerUI>
@@ -94,7 +96,8 @@ StoneColor Player<TyPlayerUI>::getStoneColor ()
 {
     LOG_FUNCTION(cout, "Player::getStoneColor");
 
-    return m_stoneColor;
+    assert(m_stoneColor.has_value());
+    return m_stoneColor.value();
 }
 
 template <typename TyPlayerUI>
@@ -176,7 +179,7 @@ void Player<TyPlayerUI>::setStoneColor (StoneColor color)
     m_stones.reserve(numberOfStones);
 
     for (size_t i = 0; i < numberOfStones; ++i)
-        m_stones.emplace_back(std::make_unique<Stone>(m_stoneColor));
+        m_stones.emplace_back(Stone{m_stoneColor.value()});
 }
 
 template <typename TyPlayerUI>
@@ -189,14 +192,14 @@ PointCoords Player<TyPlayerUI>::playStone ()
     gLogger.log(LogLevel::kMedium, cout, "About to prompt for move input");
     auto theMove = m_ui.promptForMove();
 
-    while (!m_pBoard->isValidMove(m_stones.back()->getColor(), theMove))
+    while (!m_pBoard->isValidMove(m_stones.back().getColor(), theMove))
     {
         gLogger.log(LogLevel::kMedium, cout, "Invalid move");
         m_ui.onInvalidMove(theMove);
         theMove = m_ui.promptForMove();
     }
 
-    m_pBoard->placeStoneAt(theMove, move(m_stones.back()));
+    m_pBoard->placeStoneAt(theMove, m_stones.back());
     m_stones.pop_back();
 
     return theMove;

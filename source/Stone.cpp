@@ -1,5 +1,6 @@
 #include "Stone.hpp"
 
+#include <optional>
 #include <ostream>
 
 using namespace std;
@@ -13,24 +14,27 @@ StoneColor Stone::getColor () const
 
 StoneColor getOpposingColor (StoneColor color)
 {
-    if (color == StoneColor::NONE)
-        return color;
-
     return (color == StoneColor::BLACK) ? StoneColor::WHITE : StoneColor::BLACK;
 }
 
 }
 
-ostream & operator<< (ostream & out, const Go::Stone & stone)
+ostream & operator<< (ostream & out, const std::optional<Go::Stone> & stone)
 {
     using namespace Go;
     out << "Stone: {";
 
-    switch (stone.getColor())
+    if (stone.has_value())
     {
-     case StoneColor::NONE: out << "Empty"; break;
-     case StoneColor::BLACK: out << "Black"; break;
-     case StoneColor::WHITE: out << "White"; break;
+        switch (stone->getColor())
+        {
+         case StoneColor::BLACK: out << "Black"; break;
+         case StoneColor::WHITE: out << "White"; break;
+        }
+    }
+    else
+    {
+        out << "Empty";
     }
 
     out << "}";
