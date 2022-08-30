@@ -2,6 +2,7 @@
 #define INCL_CHAIN_HPP__
 
 #include <functional>
+#include <optional>
 #include <unordered_map>
 #include "std.fwd.hpp"
 #include "Board.fwd.hpp"
@@ -14,9 +15,9 @@ namespace Go {
 class Chain
 {
  private:
-    std::unordered_map<StoneColor, ConstPointSet> m_chainAndNeighbors;
+    std::unordered_map<std::optional<StoneColor>, ConstPointSet> m_chainAndNeighbors;
     const Point & m_startPoint;
-    StoneColor m_color; // Inline assignment would need full definition!!!
+    std::optional<StoneColor> m_color; // Inline assignment would need full definition!!!
 
  public:
     struct PointVisitedAlreadyException { };
@@ -25,7 +26,8 @@ class Chain
     Chain (const Point & startPoint, const Board & board, ConstPointSet * pointsToIgnore);
 
     // Construct a chain from the potential state of a point
-    Chain (StoneColor stoneColor, const Point & startPoint, const Board & board, ConstPointSet * pointsToIgnore);
+    Chain (const std::optional<StoneColor> & stoneColor, const Point & startPoint,
+           const Board & board, ConstPointSet * pointsToIgnore);
 
     ~Chain () = default;
 
@@ -33,8 +35,8 @@ class Chain
     Chain (const Chain &) = default;
 //    Chain (Chain && other) = default;
 
-    size_t borderCountOf (StoneColor color);
-    StoneColor color () const;
+    size_t borderCountOf (const std::optional<StoneColor> & color);
+    const std::optional<StoneColor> & color () const;
     bool containsPoint (const Point & point) const;
 
      //template <typename Fn>
@@ -44,7 +46,7 @@ class Chain
     }
 
     //template <typename Fn>
-    void forEachSurroundingPoint (StoneColor color, const PointVisitorFn & visitorFn)
+    void forEachSurroundingPoint (const std::optional<StoneColor> & color, const PointVisitorFn & visitorFn)
     {
         for (auto & p : m_chainAndNeighbors[color])
             visitorFn(*p);

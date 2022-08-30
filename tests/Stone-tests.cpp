@@ -8,12 +8,11 @@ using namespace Go;
 TEST_CASE("Black/White are opposite and NONE is opposite neither", "[stone-color]") {
     REQUIRE(getOpposingColor(StoneColor::BLACK) == StoneColor::WHITE);
     REQUIRE(getOpposingColor(StoneColor::WHITE) == StoneColor::BLACK);
-    REQUIRE(getOpposingColor(StoneColor::NONE) == StoneColor::NONE);
 }
 
-TEST_CASE("Stones are movable and non-copyable", "[stone-specials]") {
+TEST_CASE("Stones are movable and copyable", "[stone-specials]") {
     STATIC_REQUIRE(std::movable<Stone>);
-    STATIC_REQUIRE(!std::copyable<Stone>);
+    STATIC_REQUIRE(std::copyable<Stone>);
 }
 
 TEST_CASE("Stones require a valid StoneColor on construction", "[stone-ctors]") {

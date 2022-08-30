@@ -9,7 +9,7 @@ namespace Go {
 class Stone;
 enum class StoneColor : unsigned char;
 
-using Stones = std::vector<std::unique_ptr<Stone>>;
+using Stones = std::vector<Stone>;
 
 } // namesapce Go
 

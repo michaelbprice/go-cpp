@@ -29,26 +29,31 @@ TEST_CASE("A default Point can play a stone", "[point-default-canplay]") {
 TEST_CASE("A Point can have a stone played only if there is no existing stone", "[point-single-stone]") {
     Point defaultPoint;
     REQUIRE(defaultPoint.canPlayStone() == true);
+    REQUIRE(!defaultPoint.getStone().has_value());
 
-    defaultPoint.playStone(std::make_unique<Stone>(StoneColor::WHITE));
+    defaultPoint.playStone(Stone{StoneColor::WHITE});
     REQUIRE(defaultPoint.canPlayStone() == false);
+    REQUIRE(defaultPoint.getStone().has_value());
 
     // TODO: This is broken. Nothing prevents this scenario other than a user checking `canPlayStone()`
     //REQUIRE_THROWS(defaultPoint.playStone(std::make_unique<Stone>(StoneColor::BLACK)));
 
     defaultPoint.removeStone();
     REQUIRE(defaultPoint.canPlayStone() == true);
+    REQUIRE(!defaultPoint.getStone().has_value());
 }
 
 TEST_CASE("Observing the Stone color on a Point", "[point-stonecolor]") {
     Point defaultPoint;
 
-    REQUIRE(defaultPoint.getStoneColor() == StoneColor::NONE);
+    REQUIRE(!defaultPoint.getStone().has_value());
 
-    defaultPoint.playStone(std::make_unique<Stone>(StoneColor::WHITE));
-    REQUIRE(defaultPoint.getStoneColor() == StoneColor::WHITE);
+    defaultPoint.playStone(Stone{StoneColor::WHITE});
+    REQUIRE(defaultPoint.getStone().has_value());
+    REQUIRE(defaultPoint.getStone()->getColor() == StoneColor::WHITE);
 
     defaultPoint.removeStone();
-    defaultPoint.playStone(std::make_unique<Stone>(StoneColor::BLACK));
-    REQUIRE(defaultPoint.getStoneColor() == StoneColor::BLACK);
+    defaultPoint.playStone(Stone{StoneColor::BLACK});
+    REQUIRE(defaultPoint.getStone().has_value());
+    REQUIRE(defaultPoint.getStone()->getColor() == StoneColor::BLACK);
 }
