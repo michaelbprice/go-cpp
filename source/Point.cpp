@@ -8,22 +8,19 @@ using namespace std;
 
 namespace Go {
 
-StoneColor Point::getStoneColor () const
+const std::optional<Stone> & Point::getStone () const
 {
-    if (m_stone.get() == nullptr)
-        return StoneColor::NONE;
-
-    return m_stone->getColor();
+    return m_stone;
 }
 
-void Point::playStone (std::unique_ptr<Stone> stone)
+void Point::playStone (const Stone & stone)
 {
-    swap(m_stone, stone);
+    m_stone = stone;
 }
 
 bool Point::canPlayStone () const
 {
-    return m_stone.get() == nullptr;
+    return !m_stone.has_value();
 }
 
 void Point::removeStone ()
@@ -44,7 +41,7 @@ ostream & operator<< (ostream & out, const Go::Point & point)
 {
     out << "Point: {" << point.coordinates << ", ";
 
-    if (point.m_stone.get())
+    if (point.m_stone.has_value())
         out << *point.m_stone;
     else
         out << "{null}";

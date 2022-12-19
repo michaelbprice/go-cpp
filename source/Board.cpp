@@ -69,7 +69,7 @@ std::vector<Chain> Board::getAllEmptyChains ()
             // We are only looking for points without a stone, so get out
             // of here if there is a stone on this point
             //
-            if (point.getStoneColor() != StoneColor::NONE)
+            if (point.getStone().has_value())
                 continue;
 
             // If the point we are considering has already been visited,
@@ -80,7 +80,7 @@ std::vector<Chain> Board::getAllEmptyChains ()
             try
             {
                 // TODO: figure out why this didn't work... emptyChains.emplace_back(StoneColor::NONE, point, *this, &alreadyVisited);
-                Chain chain(StoneColor::NONE, point, *this, &alreadyVisited);
+                Chain chain(std::nullopt, point, *this, &alreadyVisited);
                 emptyChains.push_back(chain);
                 gLogger.log(LogLevel::kMedium, cout, "Discovered empty chain"); // " : ", chain);
             }
@@ -150,11 +150,11 @@ const Point & Board::getPointRight (const Point & point) const
     }
 }
 
-StoneColor Board::getStoneColorAt (const PointCoords & coords) const
+const std::optional<Stone> & Board::getStoneAt (const PointCoords & coords) const
 {
-    LOG_BUSY_FUNCTION(cout, "Board::getStoneColorAt");
+    LOG_BUSY_FUNCTION(cout, "Board::getStoneAt");
 
-    return m_points.at(coords.row).at(coords.column).getStoneColor();
+    return m_points.at(coords.row).at(coords.column).getStone();
 }
 
 bool Board::isOccupiedPoint (const PointCoords & coords)
@@ -252,11 +252,9 @@ bool Board::isValidMove (StoneColor stoneColor, const PointCoords & coords) cons
     return true;
 }
 
-void Board::placeStoneAt (const PointCoords & coords, std::unique_ptr<Stone> stone)
+void Board::placeStoneAt (const PointCoords & coords, Stone stone)
 {
     LOG_FUNCTION(cout, "Board::placeStoneAt");
-
-    assert(stone.get() != nullptr);
 
     Point & thePoint = m_points.at(coords.row).at(coords.column);
 
@@ -266,7 +264,7 @@ void Board::placeStoneAt (const PointCoords & coords, std::unique_ptr<Stone> sto
 
     // Actually play the stone
     //
-    thePoint.playStone(std::move(stone));
+    thePoint.playStone(stone);
 }
 
 size_t Board::removeCapturedStones (StoneColor colorToCapture)

@@ -4,10 +4,11 @@
 #include <functional>
 #include <iosfwd>
 #include <memory>
+#include <optional>
 #include <unordered_set>
 
 #include "Point.fwd.hpp"
-#include "Stone.fwd.hpp"
+#include "Stone.hpp"
 
 std::ostream & operator<< (std::ostream & out, const Go::PointCoords & coords);
 std::ostream & operator<< (std::ostream & out, const Go::Point & point);
@@ -30,14 +31,14 @@ class Point final
  friend std::ostream & ::operator<< (std::ostream & out, const Go::Point & point);
 
  private:
-    std::unique_ptr<Stone> m_stone = nullptr;
+    std::optional<Stone> m_stone;
 
  public:
     PointCoords coordinates;
 
-    StoneColor getStoneColor () const;
+    const std::optional<Stone> & getStone() const;
 
-    void playStone (std::unique_ptr<Stone> stone);
+    void playStone (const Stone & stone);
 
     bool canPlayStone () const;
 
