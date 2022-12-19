@@ -1,0 +1,47 @@
+name: Build and cache dependencies
+
+on:
+  pull_request:
+    paths:
+      - vcpkg**.json
+      - .github/workflows/dependency-cache.yaml
+  workflow_dispatch:
+
+jobs:
+  cache:
+
+    env:
+      NUGET_SOURCE_NAME: github
+
+    name: ${{ matrix.os }} - ${{ matrix.cmake_preset }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-12 ]
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+
+    - name: Authenticate to GitHub NuGet registry
+      run: >
+        dotnet nuget add source
+        --username ${{ github.actor }}
+        --password ${{ secrets.GITHUB_TOKEN }}
+        --store-password-in-clear-text
+        --name ${{ env.NUGET_SOURCE_NAME }}
+        "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+    - name: Additional GitHub NuGet registry stuff
+      run: >
+        nuget setapikey
+        ${{ secrets.GITHUB_TOKEN }}
+        -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+    - name: Do vcpkg work
+      env:
+        VCPKG_BINARY_SOURCES: 'clear;nuget,${{ env.NUGET_SOURCE_NAME }},readwrite'
+      run: vcpkg install
+
