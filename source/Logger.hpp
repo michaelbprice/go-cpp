@@ -1,6 +1,7 @@
 #ifndef INCL_LOGGER_HPP__
 #define INCL_LOGGER_HPP__
 
+#include <cstddef>
 #include <iostream>
 #include <utility>
 
@@ -79,8 +80,8 @@ struct FunctionLogger final
     std::ostream & m_out;
     const char * m_name = nullptr;
 
-    static const unsigned short kIndention = 2;
-    static unsigned short nestingLevel;
+    static const std::size_t kIndention = 2;
+    static std::size_t nestingLevel;
 };
 
 #define LOG_FUNCTION(stream, fnname) FunctionLogger _fnLogger {LogLevel::kHigh, stream, fnname};
