@@ -26,13 +26,6 @@ class Player final : public IPlayer
  	
  public:
     Player (const std::string & name);
-    ~Player () = default;
-
-    Player (const Player &) = delete;
-    Player & operator= (const Player &) = delete;
-
-    Player (Player &&) = default;
-    Player & operator= (Player &&) = default;
 
     virtual void addToCaptured (size_t numCaptured) override;
     virtual size_t calculateScore () const override;
