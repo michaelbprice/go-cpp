@@ -18,13 +18,6 @@ class ConsoleUI
 
  public:
     ConsoleUI (const IPlayer & player);
-    ~ConsoleUI () = default;
-
-    ConsoleUI (const ConsoleUI &) = delete;
-    ConsoleUI & operator= (const ConsoleUI &) = delete;
-
-    ConsoleUI (ConsoleUI &&) = default;
-    ConsoleUI & operator= (ConsoleUI &&) = default;
 
     void onInvalidMove(const PointCoords & invalidMove);
     void onWin ();

@@ -28,13 +28,6 @@ class Stone final
 
  public:
     Stone (StoneColor color) : m_color(color) { }
-    ~Stone () = default;
-
-    Stone(const Stone&) = default;
-    Stone & operator= (const Stone&) = default;
-
-    Stone(Stone && other) = default;
-    Stone & operator= (Stone && other) = default;
 
     StoneColor getColor () const;
 };
