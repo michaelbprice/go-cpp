@@ -34,9 +34,6 @@ jobs:
         -name "${{ env.NUGET_SOURCE_NAME }}" \
         -username "${{ github.actor }}" \
         -password "${{ secrets.GITHUB_TOKEN }}"
-        nuget \
-        setapikey "${{ secrets.GITHUB_TOKEN }}" \
-        -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
     - name: Do vcpkg work
       env:
