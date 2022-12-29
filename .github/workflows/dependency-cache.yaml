@@ -27,14 +27,14 @@ jobs:
 
     - name: Authenticate to GitHub NuGet registry
       run: |
-        mono `vcpkg fetch nuget | tail -n 1` \
+        nuget \
         sources add \
         -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
         -storepasswordincleartext \
         -name "${{ env.NUGET_SOURCE_NAME }}" \
         -username "${{ github.actor }}" \
         -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `vcpkg fetch nuget | tail -n 1` \
+        nuget \
         setapikey "${{ secrets.GITHUB_TOKEN }}" \
         -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
