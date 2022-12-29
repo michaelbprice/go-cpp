@@ -26,13 +26,13 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Authenticate to GitHub NuGet registry
-      run: |
-        nuget \
-        sources add \
-        -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
-        -storepasswordincleartext \
-        -name "${{ env.NUGET_SOURCE_NAME }}" \
-        -username "${{ github.actor }}" \
+      run: >
+        nuget
+        sources add
+        -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        -storepasswordincleartext
+        -name "${{ env.NUGET_SOURCE_NAME }}"
+        -username "${{ github.actor }}"
         -password "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Do vcpkg work
