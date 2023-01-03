@@ -1,6 +1,10 @@
 name: Build/Test cross-platform CMake project
 
-on: [ pull_request, workflow_dispatch ]
+on:
+  pull_request:
+    paths-ignore:
+      - .github/workflows/dependency-cache.yaml
+  workflow_dispatch:
 
 jobs:
   job:

@@ -1,7 +1,10 @@
 name: Microsoft C++ Code Analysis
 
-on: [ pull_request, workflow_dispatch ]
-
+on:
+  pull_request:
+    paths-ignore:
+      - .github/workflows/dependency-cache.yaml
+  workflow_dispatch:
 
 permissions:
   contents: read
