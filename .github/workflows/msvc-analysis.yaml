@@ -3,6 +3,7 @@ name: Microsoft C++ Code Analysis
 on:
   pull_request:
     paths-ignore:
+      - .github/workflows/cmake.yaml
       - .github/workflows/dependency-cache.yaml
   workflow_dispatch:
 

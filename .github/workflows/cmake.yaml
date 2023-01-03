@@ -4,6 +4,7 @@ on:
   pull_request:
     paths-ignore:
       - .github/workflows/dependency-cache.yaml
+      - .github/workflows/msvc-analysis.yaml
   workflow_dispatch:
 
 jobs:
