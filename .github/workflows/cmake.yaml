@@ -18,6 +18,9 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-12 ]
         cmake_preset: [ debug, release ]
 
+    env:
+      NUGET_SOURCE_NAME: github
+
     steps:
     - name: Checkout source code
       uses: actions/checkout@v3
@@ -25,7 +28,19 @@ jobs:
     - name: Fetch Ninja
       uses: seanmiddleditch/gha-setup-ninja@v3
 
+    - name: Authenticate to GitHub NuGet registry
+      run: >
+        nuget
+        sources add
+        -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        -storepasswordincleartext
+        -name "${{ env.NUGET_SOURCE_NAME }}"
+        -username "${{ github.actor }}"
+        -password "${{ secrets.GITHUB_TOKEN }}"
+
     - name: Use vcpkg to fetch dependencies
+      env:
+        VCPKG_BINARY_SOURCES: 'clear;nuget,${{ env.NUGET_SOURCE_NAME }},read'
       run: vcpkg install
 
     - name: Configure and run CMake

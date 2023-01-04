@@ -15,6 +15,7 @@ jobs:
     env:
       # Path to the CMake build directory.
       CONFIG_DIR: '${{ github.workspace }}/out/${{ matrix.cmake_preset }}'
+      NUGET_SOURCE_NAME: github
 
     permissions:
       contents: read         # for actions/checkout to fetch code
@@ -33,9 +34,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Authenticate to GitHub NuGet registry
+        run: >
+          nuget
+          sources add
+          -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+          -storepasswordincleartext
+          -name "${{ env.NUGET_SOURCE_NAME }}"
+          -username "${{ github.actor }}"
+          -password "${{ secrets.GITHUB_TOKEN }}"
+
       - name: Configure CMake
         uses: lukka/run-cmake@v10
         env:
+          VCPKG_BINARY_SOURCES: 'clear;nuget,${{ env.NUGET_SOURCE_NAME }},read'
           VCPKG_ROOT: "C:\\vcpkg"
         with:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
