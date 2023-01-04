@@ -15,6 +15,7 @@ jobs:
     env:
       # Path to the CMake build directory.
       CONFIG_DIR: '${{ github.workspace }}/out/${{ matrix.cmake_preset }}'
+      NUGET_SOURCE_NAME: github
 
     permissions:
       contents: read         # for actions/checkout to fetch code
@@ -28,9 +29,6 @@ jobs:
       matrix:
         os: [ windows-latest ]
         cmake_preset: [ debug, release ]
-
-    env:
-      NUGET_SOURCE_NAME: github
 
     steps:
       - name: Checkout repository
