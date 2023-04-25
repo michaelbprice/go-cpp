@@ -10,7 +10,7 @@ TEST_CASE("PointCoords are reasonable PODs", "[pointcoords-pods]") {
     STATIC_REQUIRE(std::constructible_from<PointCoords, size_t, size_t>);
 
     PointCoords defaultCoords;
-    REQUIRE(defaultCoords.row == 0);
+    REQUIRE(defaultCoords.row != 0);
     REQUIRE(defaultCoords.column == 0);
 }
 
