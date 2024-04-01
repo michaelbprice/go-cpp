@@ -34,3 +34,7 @@
 # CMake build files
 out/
 **/Testing/*
+
+# Visual Studio and Visual Studio Code settings
+.vs/
+.vscode/
