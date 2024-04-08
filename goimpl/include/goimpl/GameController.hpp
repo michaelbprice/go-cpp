@@ -1,9 +1,9 @@
 #ifndef INCL_GAMECONTROLLER_HPP__
 #define INCL_GAMECONTROLLER_HPP__
 
-#include "Board.hpp"
+#include "goimpl/Board.hpp"
 
-#include "Player.fwd.hpp"
+#include "goimpl/Player.fwd.hpp"
 
 namespace Go {
 

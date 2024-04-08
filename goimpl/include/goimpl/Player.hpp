@@ -4,10 +4,10 @@
 #include <string>
 #include <optional>
 #include <utility>
-#include "IPlayer.hpp"
-#include "Board.fwd.hpp"
-#include "Point.fwd.hpp"
-#include "Stone.fwd.hpp"
+#include "goimpl/IPlayer.hpp"
+#include "goimpl/Board.fwd.hpp"
+#include "goimpl/Point.fwd.hpp"
+#include "goimpl/Stone.fwd.hpp"
 
 namespace Go {
 

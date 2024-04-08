@@ -1,9 +1,9 @@
 #include <memory>
 
-#include "ConsoleUI.hpp"
-#include "GameController.hpp"
-#include "Logger.hpp"
-#include "Player.hpp"
+#include "goimpl/ConsoleUI.hpp"
+#include "goimpl/GameController.hpp"
+#include "goimpl/Logger.hpp"
+#include "goimpl/Player.hpp"
 
 using namespace Go;
 

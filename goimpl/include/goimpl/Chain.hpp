@@ -4,10 +4,10 @@
 #include <functional>
 #include <optional>
 #include <unordered_map>
-#include "std.fwd.hpp"
-#include "Board.fwd.hpp"
-#include "Point.fwd.hpp"
-#include "Stone.fwd.hpp"
+#include "goimpl/std.fwd.hpp"
+#include "goimpl/Board.fwd.hpp"
+#include "goimpl/Point.fwd.hpp"
+#include "goimpl/Stone.fwd.hpp"
 
 
 namespace Go {

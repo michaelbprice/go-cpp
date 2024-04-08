@@ -3,11 +3,11 @@
 #include <iostream>
 #include <memory>
 #include <utility>
-#include "Board.hpp"
-#include "Chain.hpp"
-#include "Logger.hpp"
-#include "Player.hpp"
-#include "Stone.hpp"
+#include "goimpl/Board.hpp"
+#include "goimpl/Chain.hpp"
+#include "goimpl/Logger.hpp"
+#include "goimpl/Player.hpp"
+#include "goimpl/Stone.hpp"
 
 using namespace std;
 

@@ -1,4 +1,4 @@
-#include "Stone.hpp"
+#include "goimpl/Stone.hpp"
 
 #include <optional>
 #include <ostream>

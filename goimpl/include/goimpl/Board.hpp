@@ -7,9 +7,9 @@
 #include <optional>
 #include <utility>
 #include <vector>
-#include "Point.hpp"
-#include "Chain.fwd.hpp"
-#include "Stone.fwd.hpp"
+#include "goimpl/Point.hpp"
+#include "goimpl/Chain.fwd.hpp"
+#include "goimpl/Stone.fwd.hpp"
 
 
 namespace Go {

@@ -1,7 +1,7 @@
 #include <concepts>
 
 #include <catch2/catch_test_macros.hpp>
-#include "Stone.hpp"
+#include "goimpl/Stone.hpp"
 
 using namespace Go;
 

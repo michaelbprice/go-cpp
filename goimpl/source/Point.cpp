@@ -1,5 +1,5 @@
-#include "Point.hpp"
-#include "Stone.hpp"
+#include "goimpl/Point.hpp"
+#include "goimpl/Stone.hpp"
 #include <utility>
 #include <iostream>
 #include <algorithm>

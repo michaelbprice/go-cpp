@@ -1,8 +1,8 @@
 #include <concepts>
 
 #include <catch2/catch_test_macros.hpp>
-#include "Point.hpp"
-#include "Stone.hpp"
+#include "goimpl/Point.hpp"
+#include "goimpl/Stone.hpp"
 
 using namespace Go;
 

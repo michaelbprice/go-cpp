@@ -1,7 +1,7 @@
 #ifndef INCL_STD_FWD_HPP__
 #define INCL_STD_FWD_HPP__
 
-#include "Stone.fwd.hpp"
+#include "goimpl/Stone.fwd.hpp"
 
 namespace std {
 

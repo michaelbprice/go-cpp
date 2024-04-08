@@ -3,9 +3,9 @@
 
 #include <string>
 
-#include "Player.fwd.hpp"
-#include "Point.fwd.hpp"
-#include "Stone.fwd.hpp"
+#include "goimpl/Player.fwd.hpp"
+#include "goimpl/Point.fwd.hpp"
+#include "goimpl/Stone.fwd.hpp"
 
 namespace Go
 {

@@ -1,11 +1,11 @@
-#include "ConsoleUI.hpp"
+#include "goimpl/ConsoleUI.hpp"
 
 #include <iostream>
 #include <cassert>
 #include <string>
-#include "Board.hpp"
-#include "IPlayer.hpp"
-#include "Stone.hpp"
+#include "goimpl/Board.hpp"
+#include "goimpl/IPlayer.hpp"
+#include "goimpl/Stone.hpp"
 
 using namespace std;
 
