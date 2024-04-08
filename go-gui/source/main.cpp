@@ -60,9 +60,13 @@ struct MyInit
 
     ~MyInit ()
     {
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplSDL2_Shutdown();
-        ImGui::DestroyContext();
+        if (window)
+        {
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplSDL2_Shutdown();
+            ImGui::DestroyContext();
+            window = nullptr;
+        }
     }
 };
 
