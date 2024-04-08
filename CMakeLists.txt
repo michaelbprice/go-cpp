@@ -29,11 +29,19 @@ include(Catch)
 catch_discover_tests(goimpl-tests REPORTER junit OUTPUT_DIR junit-output)
 
 ################################################################################
-# Main executable
+# Commandline executable
 ################################################################################
 
 set(GO_COMMANDLINE_ROOT ${PROJECT_SOURCE_DIR}/go)
 add_executable(go ${GO_COMMANDLINE_ROOT}/source/main.cpp)
 target_link_libraries(go goimpl)
 
+################################################################################
+# GUI executable
+################################################################################
 
+find_package (imgui CONFIG REQUIRED)
+
+set(GO_GUI_ROOT ${PROJECT_SOURCE_DIR}/go-gui)
+add_executable(go-gui ${GO_GUI_ROOT}/source/main.cpp)
+target_link_libraries(go-gui goimpl imgui::imgui)
