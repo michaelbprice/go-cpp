@@ -23,4 +23,4 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
     clang-14 \
     g++-12 \
-    xeyes
+    xauth
