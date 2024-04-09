@@ -25,5 +25,9 @@
 				"Github.copilot-chat"
 			]
 		}
+	},
+
+	"remoteEnv": {
+		"DISPLAY": "localhost:10.0"
 	}
 }

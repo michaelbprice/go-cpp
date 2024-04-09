@@ -13,4 +13,5 @@ RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
     clang-12 g++-12 \
-    libx11-dev libxft-dev libxext-dev
+    libx11-dev libxft-dev libxext-dev \
+    xauth
