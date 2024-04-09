@@ -1,8 +1,4 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.238.1/containers/cpp/.devcontainer/base.Dockerfile
-
-# [Choice] Debian / Ubuntu version (use Debian 11, Ubuntu 18.04/22.04 on local arm64/Apple Silicon): debian-11, debian-10, ubuntu-22.04, ubuntu-20.04, ubuntu-18.04
-ARG VARIANT="bullseye"
-FROM mcr.microsoft.com/vscode/devcontainers/cpp:0-${VARIANT}
+FROM mcr.microsoft.com/devcontainers/cpp:ubuntu-22.04
 
 # [Optional] Install CMake version different from what base image has already installed. 
 # CMake reinstall choices: none, 3.21.5, 3.22.2, or versions from https://cmake.org/download/
@@ -15,9 +11,6 @@ RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
     fi \
     && rm -f /tmp/reinstall-cmake.sh
 
-# [Optional] Uncomment this section to install additional vcpkg ports.
-# RUN su vscode -c "${VCPKG_ROOT}/vcpkg install <your-port-name-here>"
-
-# [Optional] Uncomment this section to install additional packages.
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends clang-14 g++-12
+RUN apt-get update && apt-get -y install --no-install-recommends \
+    clang-12 g++-12 \
+    libx11-dev libxft-dev libxext-dev

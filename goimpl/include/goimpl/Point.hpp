@@ -7,8 +7,8 @@
 #include <optional>
 #include <unordered_set>
 
-#include "Point.fwd.hpp"
-#include "Stone.hpp"
+#include "goimpl/Point.fwd.hpp"
+#include "goimpl/Stone.hpp"
 
 std::ostream & operator<< (std::ostream & out, const Go::PointCoords & coords);
 std::ostream & operator<< (std::ostream & out, const Go::Point & point);

@@ -3,8 +3,8 @@
 
 #include <utility>
 #include <string>
-#include "Point.fwd.hpp"
-#include "Stone.fwd.hpp"
+#include "goimpl/Point.fwd.hpp"
+#include "goimpl/Stone.fwd.hpp"
 
 namespace Go {
 

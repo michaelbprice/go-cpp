@@ -1,13 +1,13 @@
-#include "Chain.hpp"
+#include "goimpl/Chain.hpp"
 
 #include <cassert>
 #include <iostream>
 #include <iterator>
 #include <unordered_set>
-#include "Board.hpp"
-#include "Logger.hpp"
-#include "Point.hpp"
-#include "Stone.hpp"
+#include "goimpl/Board.hpp"
+#include "goimpl/Logger.hpp"
+#include "goimpl/Point.hpp"
+#include "goimpl/Stone.hpp"
 
 namespace {
 

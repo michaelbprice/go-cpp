@@ -1,14 +1,14 @@
-#include "GameController.hpp"
+#include "goimpl/GameController.hpp"
 
 #include <algorithm>
 #include <functional>
 #include <iostream>
 #include <utility>
-#include "Board.hpp"
-#include "IPlayer.hpp"
-#include "Logger.hpp"
-#include "Point.hpp"
-#include "Stone.hpp"
+#include "goimpl/Board.hpp"
+#include "goimpl/IPlayer.hpp"
+#include "goimpl/Logger.hpp"
+#include "goimpl/Point.hpp"
+#include "goimpl/Stone.hpp"
 
 using namespace std;
 
