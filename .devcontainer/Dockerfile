@@ -12,4 +12,5 @@ RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
     && rm -f /tmp/reinstall-cmake.sh
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
-    clang-12 g++-12
+    clang-12 g++-12 \
+    libx11-dev libxft-dev libxext-dev
