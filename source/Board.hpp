@@ -17,7 +17,7 @@ namespace Go {
 class Board final
 {
  public:
-    static const int BOARD_SIZE = 9;
+    static const int BOARD_SIZE = 19;
 
  private:
 

@@ -1,6 +1,7 @@
 #include "ConsoleUI.hpp"
 
 #include <iostream>
+#include <iomanip>
 #include <cassert>
 #include <string>
 #include "Board.hpp"
@@ -23,20 +24,23 @@ static const unsigned char kPointSpacerChar = '-';
 void printBoard (const Go::Board & board)
 {
     using namespace Go;
+    
+    auto prevFill = cout.fill();
+    cout.fill(' ');
 
-    cout << "   ";
+    cout << "    ";
     for (size_t i = 0; i < board.BOARD_SIZE; ++i)
-        cout << " " << i;
+        cout << " " << setw(2) << i;
     cout << endl;
 
-    cout << "  " << kBorderTopLeftChar << string((9*2)+1, kBorderTopChar) << kBorderTopRightChar << endl;
+    cout << "   " << kBorderTopLeftChar << string((board.BOARD_SIZE*3)+2, kBorderTopChar) << kBorderTopRightChar << endl;
 
     for (size_t i = 0; i < board.BOARD_SIZE; ++i)
     {
-        cout << i << " " << kBorderLeftChar;
+        cout << setw(2) << i << " " << kBorderLeftChar;
         for (size_t j = 0; j < board.BOARD_SIZE; ++j)
         {
-            cout << kPointSpacerChar;
+            cout << kPointSpacerChar << kPointSpacerChar;
             if (const auto & stone = board.getStoneAt({i, j});
                 stone.has_value())
             {
@@ -49,14 +53,14 @@ void printBoard (const Go::Board & board)
                 cout << kPointChar;
             }
         }
-        cout << kPointSpacerChar << kBorderRightChar << " " << i << endl;
+        cout << kPointSpacerChar << kPointSpacerChar << kBorderRightChar << " " << i << endl;
     }
 
-    cout << "  " << kBorderBottomLeftChar << string((9*2)+1, kBorderBottomChar) << kBorderBottomRightChar << endl;
+    cout << "   " << kBorderBottomLeftChar << string((board.BOARD_SIZE*3)+2, kBorderBottomChar) << kBorderBottomRightChar << endl;
 
-    cout << "   ";
+    cout << "    ";
     for (size_t i = 0; i < board.BOARD_SIZE; ++i)
-        cout << " " << i;
+        cout << " " << setw(2) << i;
     cout << endl;
 }
 
