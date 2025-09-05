@@ -35,3 +35,21 @@ target_link_libraries(go-tests PUBLIC goimpl PRIVATE Catch2::Catch2WithMain)
 include(CTest)
 include(Catch)
 catch_discover_tests(go-tests REPORTER junit OUTPUT_DIR junit-output)
+
+################################################################################
+# Install logic
+################################################################################
+
+# Install headers
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/source/
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.hpp" PATTERN "*.tpp")
+
+# Install static library
+install(TARGETS goimpl
+        ARCHIVE DESTINATION lib/$<CONFIG>
+        LIBRARY DESTINATION lib/$<CONFIG>)
+
+# Install executables
+install(TARGETS go go-tests
+        RUNTIME DESTINATION bin/$<CONFIG>)
