@@ -43,6 +43,7 @@ class Player final : public IPlayer
     virtual void setGameBoard (Board & board) override;
     virtual void setStoneColor (StoneColor color) override;
     virtual PointCoords playStone () override;
+    virtual void placeStoneAt (PointCoords point) override;
 };
 
 } // namespace Go

@@ -29,6 +29,7 @@ class IPlayer
     virtual void setGameBoard (Board & board) = 0;
     virtual void setStoneColor (StoneColor color) = 0;
     virtual PointCoords playStone () = 0;
+    virtual void placeStoneAt (PointCoords point) = 0;
 };
 
 } // namespace Go

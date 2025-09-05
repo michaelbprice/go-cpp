@@ -199,10 +199,20 @@ PointCoords Player<TyPlayerUI>::playStone ()
         theMove = m_ui.promptForMove();
     }
 
-    m_pBoard->placeStoneAt(theMove, m_stones.back());
-    m_stones.pop_back();
+    placeStoneAt(theMove);
 
     return theMove;
 }
 
+template <typename TyPlayerUI>
+void Player<TyPlayerUI>::placeStoneAt (PointCoords point)
+{
+    LOG_FUNCTION(cout, "Player::placeStoneAt");
+
+    assert(m_pBoard != nullptr);
+
+    m_pBoard->placeStoneAt(point, m_stones.back());
+    m_stones.pop_back();
 }
+
+} // namespace Go
