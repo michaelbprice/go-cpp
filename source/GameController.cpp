@@ -66,7 +66,8 @@ void GameController::doGameLoop (PlayerPair & playerPair)
 
             // Remove captured stones and count them
             //
-            size_t captureCount = m_board.removeCapturedStones(waitingPlayer.getStoneColor());
+            auto captures = m_board.removeCapturedStones(waitingPlayer.getStoneColor());
+            size_t captureCount = captures.size();
 
             // Add captured stones to current player's total (for scoring purposes)
             //

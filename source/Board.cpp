@@ -2,6 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <utility>
+#include <vector>
 
 #include "Board.hpp"
 #include "Chain.hpp"
@@ -267,7 +268,7 @@ void Board::placeStoneAt (const PointCoords & coords, Stone stone)
     thePoint.playStone(stone);
 }
 
-size_t Board::removeCapturedStones (StoneColor colorToCapture)
+std::vector<PointCoords> Board::removeCapturedStones (StoneColor colorToCapture)
 {
     LOG_FUNCTION(cout, "Board::removeCapturedStones");
 
@@ -278,6 +279,8 @@ size_t Board::removeCapturedStones (StoneColor colorToCapture)
     // in the chain.
     //
     ConstPointSet alreadyVisited;
+
+    std::vector<PointCoords> captures;
 
     for (size_t row = 0; row < m_points.size(); ++row)
     {
@@ -306,10 +309,11 @@ size_t Board::removeCapturedStones (StoneColor colorToCapture)
                     // For each point in the chain, remove the stone from the board
                     // at those coordniates
                     //
-                    currentChain.forEachPoint([this](const Point & point)
+                    currentChain.forEachPoint([this, &captures](const Point & point)
                     {
                         LOG_BUSY_FUNCTION(cout, "Chain::removeCapturedStones::lambda_doStoneRemoval");
                         m_points[point.coordinates.row][point.coordinates.column].removeStone();
+						captures.emplace_back(point.coordinates);
                     }); 
                 }
             }
@@ -317,6 +321,7 @@ size_t Board::removeCapturedStones (StoneColor colorToCapture)
             {
                 gLogger.log(LogLevel::kFirehose, cout, "Skipping ", thePoint);
             }
+			assert(captureCount == captures.size());
         }
     }
 
@@ -325,7 +330,7 @@ size_t Board::removeCapturedStones (StoneColor colorToCapture)
     //
     m_koState.first = (captureCount == 1);
 
-    return captureCount;
+    return captures;
 }
 
 } // namespace Go

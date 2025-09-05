@@ -49,7 +49,7 @@ class Board final
     bool isOccupiedPoint (const PointCoords & coords);
     bool isValidMove (StoneColor color, const PointCoords & coords) const;
     void placeStoneAt (const PointCoords & coords, Stone stone);
-    size_t removeCapturedStones (StoneColor colorToCapture);
+    std::vector<PointCoords> removeCapturedStones (StoneColor colorToCapture);
 
     //template <typename FnOnVisit>
     void visitNeighboringPoints (const Point & point, const PointVisitorFn & visitorFn) const
