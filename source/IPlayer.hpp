@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <string>
+#include "Board.fwd.hpp"
 #include "Point.fwd.hpp"
 #include "Stone.fwd.hpp"
 
