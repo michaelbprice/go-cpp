@@ -25,6 +25,15 @@
             "displayName": "Release Config",
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" },
             "inherits": ["base"]
+        },
+        {
+            "name": "release_dd",
+            "displayName": "Release (DD) Config",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "USE_DYNAMIC_DEBUGGING": "ON"
+            },
+            "inherits": ["base"]
         }
     ],
     "buildPresets": [
@@ -37,6 +46,11 @@
             "name": "release",
             "displayName": "Release Build",
             "configurePreset": "release"
+        },
+        {
+            "name": "release_dd",
+            "displayName": "Release (DD) Build",
+            "configurePreset": "release_dd"
         }
     ],
     "testPresets": [
@@ -49,6 +63,11 @@
             "name": "release",
             "displayName": "Release Test",
             "configurePreset": "release"
+        },
+        {
+            "name": "release_dd",
+            "displayName": "Release (DD) Test",
+            "configurePreset": "release_dd"
         }
     ]
 }
