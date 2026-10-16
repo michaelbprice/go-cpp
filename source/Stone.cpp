@@ -1,7 +1,6 @@
-#include "Stone.hpp"
+module goimpl;
 
-#include <optional>
-#include <ostream>
+import std;
 
 using namespace std;
 
@@ -15,8 +14,6 @@ StoneColor Stone::getColor () const
 StoneColor getOpposingColor (StoneColor color)
 {
     return (color == StoneColor::BLACK) ? StoneColor::WHITE : StoneColor::BLACK;
-}
-
 }
 
 ostream & operator<< (ostream & out, const std::optional<Go::Stone> & stone)
@@ -40,3 +37,5 @@ ostream & operator<< (ostream & out, const std::optional<Go::Stone> & stone)
     out << "}";
     return out;
 }
+
+} // namespace Go

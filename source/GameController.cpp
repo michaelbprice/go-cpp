@@ -1,14 +1,10 @@
-#include "GameController.hpp"
+module;
 
-#include <algorithm>
-#include <functional>
-#include <iostream>
-#include <utility>
-#include "Board.hpp"
-#include "IPlayer.hpp"
-#include "Logger.hpp"
-#include "Point.hpp"
-#include "Stone.hpp"
+#include "LoggerMacros.hpp"
+
+module goimpl;
+
+import std;
 
 using namespace std;
 
@@ -166,4 +162,3 @@ void GameController::start ()
 }
 
 } // namespace Go
-

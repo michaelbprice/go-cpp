@@ -1,18 +1,7 @@
-#include <algorithm>
-#include <cassert>
-#include <iostream>
-#include <memory>
-#include <utility>
-#include "Board.hpp"
-#include "Chain.hpp"
-#include "Logger.hpp"
-#include "Player.hpp"
-#include "Stone.hpp"
-
-using namespace std;
-
 namespace Go
 {
+
+using namespace std;
 
 template <typename TyPlayerUI>
 Player<TyPlayerUI>::Player (const string & name)

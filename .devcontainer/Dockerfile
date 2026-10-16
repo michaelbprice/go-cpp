@@ -5,8 +5,8 @@ ARG VARIANT="bullseye"
 FROM mcr.microsoft.com/vscode/devcontainers/cpp:0-${VARIANT}
 
 # [Optional] Install CMake version different from what base image has already installed. 
-# CMake reinstall choices: none, 3.21.5, 3.22.2, or versions from https://cmake.org/download/
-ARG REINSTALL_CMAKE_VERSION_FROM_SOURCE="3.22.2"
+# CMake reinstall choices: none, or versions from https://cmake.org/download/
+ARG REINSTALL_CMAKE_VERSION_FROM_SOURCE="4.3.1"
 
 # Optionally install the cmake for vcpkg
 COPY ./reinstall-cmake.sh /tmp/
@@ -20,4 +20,9 @@ RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
 
 # [Optional] Uncomment this section to install additional packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends clang-14 g++-12
+    && curl -fsSL https://apt.llvm.org/llvm.sh -o /tmp/llvm.sh \
+    && bash /tmp/llvm.sh 21 \
+    && apt-get -y install --no-install-recommends libc++-21-dev libc++abi-21-dev \
+    && rm -f /tmp/llvm.sh
+
+ENV CC=clang-21 CXX=clang++-21 CXXFLAGS="-stdlib=libc++"
