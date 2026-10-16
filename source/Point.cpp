@@ -1,8 +1,6 @@
-#include "Point.hpp"
-#include "Stone.hpp"
-#include <utility>
-#include <iostream>
-#include <algorithm>
+module goimpl;
+
+import std;
 
 using namespace std;
 
@@ -29,8 +27,6 @@ void Point::removeStone ()
 }
 
 
-} // namespace Go
-
 ostream & operator<< (ostream & out, const Go::PointCoords & coords)
 {
     out << "[" << coords.row << "," << coords.column << "]";
@@ -49,3 +45,5 @@ ostream & operator<< (ostream & out, const Go::Point & point)
     out << "}";
     return out;
 }
+
+} // namespace Go

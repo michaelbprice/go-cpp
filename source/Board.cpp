@@ -1,13 +1,11 @@
-#include <cassert>
-#include <iostream>
-#include <memory>
-#include <utility>
-#include <vector>
+module;
 
-#include "Board.hpp"
-#include "Chain.hpp"
-#include "Logger.hpp"
-#include "Stone.hpp"
+#include <cassert>
+#include "LoggerMacros.hpp"
+
+module goimpl;
+
+import std;
 
 using namespace std;
 
@@ -334,4 +332,3 @@ std::vector<PointCoords> Board::removeCapturedStones (StoneColor colorToCapture)
 }
 
 } // namespace Go
-

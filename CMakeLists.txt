@@ -1,10 +1,26 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 4.3)
+
+# CMake's import-std experimental gate is version-specific and precedes project().
+if(CMAKE_VERSION VERSION_LESS 4.4)
+    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b")
+elseif(CMAKE_VERSION VERSION_LESS 4.5)
+    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "f35a9ac6-8463-4d38-8eec-5d6008153e7d")
+endif()
 
 option(USE_DYNAMIC_DEBUGGING "Enable dynamic debugging flags" OFF)  #TODO: Should describe flags that are not compatible.
 
 project(go-cpp CXX)
-set(CMAKE_CXX_STANDARD 20)
-include_directories(${PROJECT_SOURCE_DIR}/source)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_MODULE_STD ON)
+
+if(NOT CMAKE_GENERATOR MATCHES "^Ninja")
+    message(FATAL_ERROR "C++ standard library modules require a Ninja generator.")
+endif()
+if(NOT 23 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
+    message(FATAL_ERROR "The selected C++ toolchain does not support import std in C++23 mode.")
+endif()
 
 if (USE_DYNAMIC_DEBUGGING STREQUAL "ON")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /dynamicdeopt /O2 /Gw")
@@ -19,6 +35,12 @@ enable_testing()
 file(GLOB SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/*.cpp)
 list(REMOVE_ITEM SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/main.cpp)
 add_library(goimpl ${SOURCE_FILES})
+target_compile_features(goimpl PUBLIC cxx_std_23)
+target_sources(goimpl PUBLIC
+    FILE_SET modules TYPE CXX_MODULES
+    BASE_DIRS ${PROJECT_SOURCE_DIR}/source
+    FILES ${PROJECT_SOURCE_DIR}/source/goimpl.ixx
+)
 
 if (USE_DYNAMIC_DEBUGGING STREQUAL "ON")
     set_target_properties(goimpl PROPERTIES
@@ -57,15 +79,14 @@ catch_discover_tests(go-tests REPORTER junit OUTPUT_DIR junit-output)
 # Install logic
 ################################################################################
 
-# Install headers
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/source/
-        DESTINATION include
-        FILES_MATCHING PATTERN "*.hpp" PATTERN "*.tpp")
+# Install the module source and its textual implementation dependencies.
+install(FILES source/Player.tpp source/LoggerMacros.hpp
+        DESTINATION include/goimpl)
 
-# Install static library
 install(TARGETS goimpl
         ARCHIVE DESTINATION lib/$<CONFIG>
-        LIBRARY DESTINATION lib/$<CONFIG>)
+        LIBRARY DESTINATION lib/$<CONFIG>
+        FILE_SET modules DESTINATION include/goimpl)
 
 if (USE_DYNAMIC_DEBUGGING STREQUAL "ON")
     # Install alt.lib files for Dynamic Debugging support

@@ -8,6 +8,7 @@
             "binaryDir": "${sourceDir}/out/${presetName}",
             "cacheVariables": {
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/${presetName}/install/",
+                "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/triplets",
                 "CMAKE_TOOLCHAIN_FILE": {
                     "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
                      "type": "FILEPATH"

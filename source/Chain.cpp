@@ -1,13 +1,11 @@
-#include "Chain.hpp"
+module;
 
 #include <cassert>
-#include <iostream>
-#include <iterator>
-#include <unordered_set>
-#include "Board.hpp"
-#include "Logger.hpp"
-#include "Point.hpp"
-#include "Stone.hpp"
+#include "LoggerMacros.hpp"
+
+module goimpl;
+
+import std;
 
 namespace {
 
@@ -156,4 +154,3 @@ bool Chain::containsPoint (const Point & point) const
 }
 
 } // namespace Go
-

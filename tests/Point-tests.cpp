@@ -1,13 +1,12 @@
-#include <concepts>
-
 #include <catch2/catch_test_macros.hpp>
-#include "Point.hpp"
-#include "Stone.hpp"
+
+import std;
+import goimpl;
 
 using namespace Go;
 
 TEST_CASE("PointCoords are reasonable PODs", "[pointcoords-pods]") {
-    STATIC_REQUIRE(std::constructible_from<PointCoords, size_t, size_t>);
+    STATIC_REQUIRE(std::constructible_from<PointCoords, std::size_t, std::size_t>);
 
     PointCoords defaultCoords;
     REQUIRE(defaultCoords.row == 0);

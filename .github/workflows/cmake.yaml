@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-12 ]
+        os: [ ubuntu-24.04, windows-latest, macos-15 ]
         cmake_preset: [ debug, release ]
 
     env:
@@ -27,6 +27,39 @@ jobs:
 
     - name: Fetch Ninja
       uses: seanmiddleditch/gha-setup-ninja@v3
+
+    - name: Set up CMake
+      uses: lukka/get-cmake@latest
+      with:
+        cmakeVersion: 4.3.1
+
+    - name: Set up Linux module toolchain
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        curl -fsSL https://apt.llvm.org/llvm.sh -o "${RUNNER_TEMP}/llvm.sh"
+        sudo bash "${RUNNER_TEMP}/llvm.sh" 21
+        sudo apt-get install -y libc++-21-dev libc++abi-21-dev
+        echo "CC=clang-21" >> "$GITHUB_ENV"
+        echo "CXX=clang++-21" >> "$GITHUB_ENV"
+        echo "CXXFLAGS=-stdlib=libc++" >> "$GITHUB_ENV"
+        echo "VCPKG_DEFAULT_TRIPLET=x64-linux-libcxx" >> "$GITHUB_ENV"
+
+    - name: Set up macOS module toolchain
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        brew install llvm@21
+        echo "$(brew --prefix llvm@21)/bin" >> "$GITHUB_PATH"
+        echo "CC=$(brew --prefix llvm@21)/bin/clang" >> "$GITHUB_ENV"
+        echo "CXX=$(brew --prefix llvm@21)/bin/clang++" >> "$GITHUB_ENV"
+        echo "CXXFLAGS=-stdlib=libc++" >> "$GITHUB_ENV"
+        echo "VCPKG_DEFAULT_TRIPLET=x64-osx-libcxx" >> "$GITHUB_ENV"
+        echo "LDFLAGS=-L$(brew --prefix llvm@21)/lib/c++ -Wl,-rpath,$(brew --prefix llvm@21)/lib/c++" >> "$GITHUB_ENV"
+
+    - name: Set up MSVC
+      if: runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
 
     - name: Authenticate to GitHub NuGet registry
       run: >
@@ -41,17 +74,16 @@ jobs:
     - name: Use vcpkg to fetch dependencies
       env:
         VCPKG_BINARY_SOURCES: 'clear;nuget,${{ env.NUGET_SOURCE_NAME }},read'
-      run: vcpkg install
+      run: vcpkg install --overlay-triplets=cmake/triplets
 
     - name: Configure and run CMake
       uses: lukka/run-cmake@v10
       env:
         VCPKG_ROOT: ${{ fromJSON('[ "/usr/local/share/vcpkg", "C:\\vcpkg" ]')[runner.os == 'Windows'] }}
-        CC: ${{ fromJSON('{"Linux":"gcc-10", "macOS":"clang", "Windows":"" }')[runner.os] }}
-        CXX: ${{ fromJSON('{"Linux":"g++-10", "macOS":"clang++", "Windows":"" }')[runner.os] }}
       with:
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
         configurePreset: ${{ matrix.cmake_preset }}
+        configurePresetAdditionalArgs: "['-DVCPKG_TARGET_TRIPLET=${{ env.VCPKG_DEFAULT_TRIPLET || 'x64-windows' }}']"
         buildPreset: ${{ matrix.cmake_preset }}
         testPreset: ${{ matrix.cmake_preset }}
 

@@ -1,12 +1,10 @@
-#include "ConsoleUI.hpp"
+module;
 
-#include <iostream>
-#include <iomanip>
 #include <cassert>
-#include <string>
-#include "Board.hpp"
-#include "IPlayer.hpp"
-#include "Stone.hpp"
+
+module goimpl;
+
+import std;
 
 using namespace std;
 
